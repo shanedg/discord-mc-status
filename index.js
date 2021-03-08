@@ -5,10 +5,10 @@
  * https://discordjs.guide/
  */
 
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
-const discord = require('discord.js');
-const dotenv = require('dotenv');
+import discord from 'discord.js';
+import dotenv from 'dotenv';
 
 dotenv.config();
 const client = new discord.Client();
