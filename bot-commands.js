@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 
 import {
-  countdownSeconds,
+  countDownSeconds,
   say,
 } from './minecraft-commands.js';
 
@@ -28,8 +28,8 @@ const stop = async message => {
   console.log('TODO: stop server');
   message.channel.send('TODO: stop server');
   // say('stopping the server in 30 seconds...');
-  await countdownSeconds({ from: 30, to: 10, step: 5});
-  await countdownSeconds({ from: 9 });
+  await countDownSeconds({ from: 30, to: 10, step: 5});
+  await countDownSeconds({ from: 9 });
 
   // TODO: broadcast 30 second warning
   // TODO: stop mc server
