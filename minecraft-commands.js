@@ -16,25 +16,18 @@ const getRconConnection = async () => {
     password,
   });
 
-  rcon.on('connect', () => {
-    console.log('rcon connected');
+  return new Promise((resolve, reject) => {
+    rcon.connect()
+      .then(resolve)
+      .catch(error => reject(error));
   });
+};
 
-  rcon.on('authenticated', () => {
-    console.log('rcon authenticated');
-  });
-
-  rcon.on('end', () => {
-    console.log('rcon disconnected');
-  });
-
-  rcon.on('error', () => {
-    console.log('rcon error');
-  });
-
-  await rcon.connect();
-
-  return rcon;
+const run = async command => {
+  const rcon = await getRconConnection();
+  const commandResponse = await rcon.send(command);
+  rcon.end();
+  return commandResponse;
 };
 
 const countDownSeconds = async (options = {
@@ -65,34 +58,69 @@ const countDownSeconds = async (options = {
   });
 
   rcon.end();
-}
+};
 
 const say = async message => {
-  const rcon = await getRconConnection();
-  const response = await rcon.send(`say ${message}`);
-  rcon.end();
-  return response;
+  return await run(`say ${message}`);
+};
+
+const getUserFromAlias = username => {
+  switch (username) {
+    // real names
+    case 'devin':
+      return 'Jonks';
+    case 'karl':
+    case 'carl':
+      return 'Chardlander';
+    case 'neil':
+    case 'niel':
+      return 'MaximumBurlap';
+    case 'nick':
+      return 'nickgnack';
+    case 'shane':
+      return 'crossfiresdg';
+    case 'zack':
+    case 'zach':
+      return 'AcidJesus';
+
+    // player shortcuts
+    case 'everyone':
+      // all players
+      return '@a';
+    case 'random':
+      // random player
+      return '@r';
+    case 'closest':
+      // nearest player
+      return '@p';
+
+    // entity shortcuts
+    case 'everything':
+      // all entities
+      return '@e';
+    case 'current':
+      // current entity
+      return '@s';
+
+    default:
+      return username;
+  }
+};
+
+const whisper = async (username, message) => {
+  return await run(`tell ${getUserFromAlias(username)} ${message}`);
 };
 
 const autoSaveOff = async () => {
-  const rcon = await getRconConnection();
-  const response = await rcon.send('save-off');
-  rcon.end();
-  return response;
+  return await run('save-off');
 };
 
 const autoSaveOn = async () => {
-  const rcon = await getRconConnection();
-  const response = await rcon.send('save-on');
-  rcon.end();
-  return response;
+  return await run('save-on');
 };
 
 const stopServer = async () => {
-  const rcon = await getRconConnection();
-  const response = await rcon.send('stop');
-  rcon.end();
-  return response;
+  return await run('stop');
 };
 
 const mandelbrot = async () => {
@@ -114,13 +142,14 @@ const mandelbrot = async () => {
         i += 1
     }
 
-    const block = ["obsidian", "obsidian", "blue_terracotta", "cyan_wool", "light_blue_wool", "white_wool"][(i / 4) | 0]
-    await rcon.send(`/setblock ${-64 + x} ${64} ${-64 + y} ${block}`)
+    const block = ["obsidian", "obsidian", "blue_terracotta", "cyan_wool", "light_blue_wool", "white_wool"][(i / 4) | 0];
+    await rcon.send(`/setblock ${-64 + x} ${64} ${-64 + y} ${block}`);
   }
   const elapsed = Date.now() - start;
   console.log(`Took ${elapsed / 1000} seconds`);
 
   rcon.end();
+  return 'tried to render a fractal near spawn';
 };
 
 const ping = async () => {
@@ -129,12 +158,10 @@ const ping = async () => {
 };
 
 const list = async () => {
-  const rcon = await getRconConnection();
-  const response = await rcon.send('list');
-  rcon.end();
-  console.log('list', response);
-  return response;
-}
+  const response = await run('list');
+  const [ , players ] = response.split('players online: ');
+  return players.split(' ');
+};
 
 export {
   autoSaveOff,
@@ -145,4 +172,5 @@ export {
   ping,
   say,
   stopServer,
+  whisper,
 };
