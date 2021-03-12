@@ -30,12 +30,13 @@ const run = async command => {
   return commandResponse;
 };
 
-const countDownSeconds = async (options = {
-  from: 10,
-  to: 0,
-  step: 1,
-}) => {
-  const { from, to, step } = options;
+const countDownSeconds = async (options) => {
+  const {
+    from = 10,
+    to = 0,
+    step = 1,
+  } = options;
+
   const rcon = await getRconConnection();
 
   await new Promise((resolve, _reject) => {
