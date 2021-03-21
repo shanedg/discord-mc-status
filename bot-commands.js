@@ -22,6 +22,7 @@ const start = message => {
     console.log('stdout', stdout);
   });
   // TODO: capture instance id
+  // TODO: associate elastic ip with new instance
 };
 
 const stop = async message => {
