@@ -460,6 +460,10 @@
     {
       "packageName": "discord-bot",
       "projectFolder": "apps/discord-bot"
+    },
+    {
+      "packageName": "instance-listener",
+      "projectFolder": "apps/instance-listener"
     }
   ]
 }
