@@ -464,6 +464,10 @@
     {
       "packageName": "instance-listener",
       "projectFolder": "apps/instance-listener"
+    },
+    {
+      "packageName": "minecraft-rcon",
+      "projectFolder": "libraries/minecraft-rcon"
     }
   ]
 }
