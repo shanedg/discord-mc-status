@@ -35,7 +35,7 @@ client.on('message', message => {
   const { content, author } = message;
   const watchWord = '!server';
 
-  // Ignore all messages from bots and any that don't start with the watch word.
+  // Ignore any message that doesn't start with the watch word and all messages from bots.
   if (!content.startsWith(watchWord) || author.bot === true) {
     return;
   }
