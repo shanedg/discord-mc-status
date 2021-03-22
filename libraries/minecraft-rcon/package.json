@@ -9,5 +9,11 @@
   },
   "type": "module",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "peerDependencies": {
+    "rcon-client": "^4.2.3"
+  },
+  "devDependencies": {
+    "rcon-client": "^4.2.3"
+  }
 }

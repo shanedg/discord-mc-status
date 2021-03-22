@@ -35,6 +35,13 @@
         "express": "~4.17.1"
       }
     },
+    "@rush-temp/minecraft-rcon": {
+      "version": "file:projects/minecraft-rcon.tgz",
+      "integrity": "sha512-dCcliMMBcU38LwI0ojeDwV5Ho6p27W4FPgSDqShxBdni6o4V8Y1+V3cd31YCe4paLoR8bISFpbjppu1omha6cQ==",
+      "requires": {
+        "rcon-client": "^4.2.3"
+      }
+    },
     "abort-controller": {
       "version": "3.0.0",
       "resolved": "https://registry.npmjs.org/abort-controller/-/abort-controller-3.0.0.tgz",
