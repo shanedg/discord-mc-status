@@ -35,9 +35,12 @@ export default class MinecraftRcon {
    */
   async run(command) {
     const rcon = await this.getConnection();
-    const commandResponse = await rcon.send(command);
+    const response = await rcon.send(command);
     rcon.end();
-    return commandResponse;
+    return {
+      command,
+      response,
+    };
   }
 
   /**
@@ -50,8 +53,12 @@ export default class MinecraftRcon {
     const responses = [];
 
     for (let i = 0; i < commands.length; i += 1) {
-      const response = await rcon.send(commands[i]);
-      responses.push(response);
+      const command = commands[i];
+      const response = await rcon.send(command);
+      responses.push({
+        command,
+        response,
+      });
     }
 
     rcon.end();
@@ -63,7 +70,7 @@ export default class MinecraftRcon {
    * @returns {Promise<string[]>} Online players
    */
   async getPlayersOnline() {
-    const response = await this.run('list');
+    const { response } = await this.run('list');
     const [ , players ] = response.split('players online: ');
     return players.length ? players.split(' ') : [];
   }
