@@ -41,6 +41,24 @@ export default class MinecraftRcon {
   }
 
   /**
+   * Create a new connection and run several commands, in order.
+   * @param {string[]} commands List of commands to run
+   * @returns {string[]} List of command results
+   */
+  async runAll(commands) {
+    const rcon = await this.getConnection();
+    const responses = [];
+
+    for (let i = 0; i < commands.length; i += 1) {
+      const response = await rcon.send(commands[i]);
+      responses.push(response);
+    }
+
+    rcon.end();
+    return responses;
+  }
+
+  /**
    * Get a list of players currently on the Minecraft server.
    * @returns {Promise<string[]>} Online players
    */
