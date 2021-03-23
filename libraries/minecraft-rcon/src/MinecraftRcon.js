@@ -34,7 +34,7 @@ export default class MinecraftRcon {
    * @returns {string} Command result
    */
   async run(command) {
-    const rcon = await this.getRconConnection();
+    const rcon = await this.getConnection();
     const commandResponse = await rcon.send(command);
     rcon.end();
     return commandResponse;
@@ -45,7 +45,7 @@ export default class MinecraftRcon {
    * @returns {Promise<string[]>} Online players
    */
   async getPlayersOnline() {
-    const response = await run('list');
+    const response = await this.run('list');
     const [ , players ] = response.split('players online: ');
     return players.split(' ');
   }
