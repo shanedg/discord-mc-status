@@ -37,8 +37,9 @@
     },
     "@rush-temp/minecraft-rcon": {
       "version": "file:projects/minecraft-rcon.tgz",
-      "integrity": "sha512-dCcliMMBcU38LwI0ojeDwV5Ho6p27W4FPgSDqShxBdni6o4V8Y1+V3cd31YCe4paLoR8bISFpbjppu1omha6cQ==",
+      "integrity": "sha512-DL31/1/HsAWpwbQi+j8/GdR0Y4i8UGn2f8v61rRfcvWH5TLb1WRsN4TItO0H/VQa4Zy6obkZb7bkmb/j/suTVw==",
       "requires": {
+        "dotenv": "^8.2.0",
         "rcon-client": "^4.2.3"
       }
     },
