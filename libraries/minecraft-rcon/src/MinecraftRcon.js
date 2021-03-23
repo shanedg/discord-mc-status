@@ -47,6 +47,6 @@ export default class MinecraftRcon {
   async getPlayersOnline() {
     const response = await this.run('list');
     const [ , players ] = response.split('players online: ');
-    return players.split(' ');
+    return players.length ? players.split(' ') : [];
   }
 }
