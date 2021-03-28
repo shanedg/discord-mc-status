@@ -462,8 +462,8 @@
       "projectFolder": "apps/discord-bot"
     },
     {
-      "packageName": "instance-listener",
-      "projectFolder": "apps/instance-listener"
+      "packageName": "lifecycle-manager",
+      "projectFolder": "apps/lifecycle-manager"
     },
     {
       "packageName": "minecraft-rcon",

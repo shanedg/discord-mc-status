@@ -28,9 +28,9 @@
         "rcon-client": "^4.2.3"
       }
     },
-    "@rush-temp/instance-listener": {
-      "version": "file:projects/instance-listener.tgz",
-      "integrity": "sha512-Xlcn+slXNwulQmAMBqxpulp0omatEQJkLH0Ocf6RzdNt8xPheuD1+m3f8OnS0/Ai4yUncX3rvErwjXA7dyCNCA==",
+    "@rush-temp/lifecycle-manager": {
+      "version": "file:projects/lifecycle-manager.tgz",
+      "integrity": "sha512-PkB7YzJeSs8M77SLdh3V4fC8K5VPsMcxFPRhxVXSVkzrT+5oHjsGOSOFUhg7Ukolw55vlIjY25At5DfeA0cVBA==",
       "requires": {
         "express": "~4.17.1"
       }
