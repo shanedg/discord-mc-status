@@ -8,15 +8,6 @@
 import discord from 'discord.js';
 import dotenv from 'dotenv';
 
-import {
-  backup,
-  online,
-  sorry,
-  start,
-  status,
-  stop,
-} from './bot-commands.js';
-
 dotenv.config();
 const client = new discord.Client();
 
@@ -46,22 +37,31 @@ client.on('message', message => {
 
   switch (command) {
     case 'start':
-      start(message);
+      message.channel.send('starting server...');
+      // TODO: check if server running
+      // TODO: capture instance id
+      // TODO: associate elastic ip with new instance
+
+      // TODO: start?
+      //  aws ec2 run-instances --launch-template LaunchTemplateId=lt-0b091f225fe894a12
+
       break;
     case 'stop':
-      stop(message);
-      break;
-    case 'status':
-      status(message);
+      message.channel.send('stopping server...');
       break;
     case 'online':
-      online(message);
+      // TODO
       break;
     case 'backup':
-      backup(message);
+      message.channel.send('starting backup tasks...');
+      // TODO: broadcast 30 second warning
+      // TODO: turn off autosave
+      // TODO: backup
+      // TODO: turn on autosave
+      // TODO: broadcast backup complete
       break;
     default:
-      sorry(message);
+      message.channel.send('sorry?');
   }
 });
 
