@@ -5,24 +5,28 @@
  * https://discordjs.guide/
  */
 
+import axios from 'axios';
 import discord from 'discord.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const client = new discord.Client();
 
-// const clientId = process.env.CLIENT_ID;
-// const clientSecret = process.env.BOT_TOKEN;
-// const publicKey = process.env.PUBLIC_KEY;
 const {
   BOT_TOKEN: appBotToken,
+  LIFECYCLE_BASE_URL: lifecycleBaseUrl,
 } = process.env;
 
-client.once('ready', () => {
-  console.log('discord-mc-status ready!');
+const axiosInstance = axios.create({
+  baseURL: lifecycleBaseUrl,
 });
 
-client.on('message', message => {
+const bot = new discord.Client();
+
+bot.once('ready', () => {
+  console.log('discord-bot ready!');
+});
+
+bot.on('message', message => {
   const { content, author } = message;
   const watchWord = '!server';
 
@@ -33,7 +37,6 @@ client.on('message', message => {
 
   const watchWordPattern = new RegExp(`\\${watchWord} `);
   const command = content.replace(watchWordPattern, '');
-  console.log(`parsed command ${command} from ${content}`);
 
   switch (command) {
     case 'start':
@@ -48,9 +51,30 @@ client.on('message', message => {
       break;
     case 'stop':
       message.channel.send('stopping server...');
+      axiosInstance.post('/stop')
+        .then(() => {
+          message.channel.send('server stopped.');
+        })
+        .catch(({ response }) => {
+          if (response?.status === 400) {
+            message.channel.send('connection refused, the server is (probably) already stopped.');
+          } else {
+            message.channel.send('there was an unexpected problem stopping the server!');
+          }
+        });
       break;
     case 'online':
-      // TODO
+      axiosInstance.get('/online')
+        .then(({ data }) => {
+          message.channel.send(`online: ${data.length}/20\n${data.join(',')}`);
+        })
+        .catch(({ response }) => {
+          if (response?.status === 400) {
+            message.channel.send('connection refused, the server is probably stopped.');
+          } else {
+            message.channel.send('there was an unexpected problem checking who\'s online!');
+          }
+        });
       break;
     case 'backup':
       message.channel.send('starting backup tasks...');
@@ -65,4 +89,4 @@ client.on('message', message => {
   }
 });
 
-client.login(appBotToken);
+bot.login(appBotToken);

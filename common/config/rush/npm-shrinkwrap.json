@@ -21,17 +21,18 @@
     },
     "@rush-temp/discord-bot": {
       "version": "file:projects/discord-bot.tgz",
-      "integrity": "sha512-i2/MiR6k8Pizd9hJ+ZNe6uZcDAF37f9WmPap/BTqmZVj/SLYytF4xLMJTvPUMu5HUT7zmB3wTsK5uJOsWP1WkA==",
+      "integrity": "sha512-aSwwU2y6WWCWTIECg8KFtsaI4cPY4+yoQYG/ZmZNJ4ibDym47WlJjTyPeERb2s1azQXyJc6A4RN2xAeGa4RgXw==",
       "requires": {
+        "axios": "~0.21.1",
         "discord.js": "^12.5.1",
-        "dotenv": "^8.2.0",
-        "rcon-client": "^4.2.3"
+        "dotenv": "^8.2.0"
       }
     },
     "@rush-temp/lifecycle-manager": {
       "version": "file:projects/lifecycle-manager.tgz",
-      "integrity": "sha512-PkB7YzJeSs8M77SLdh3V4fC8K5VPsMcxFPRhxVXSVkzrT+5oHjsGOSOFUhg7Ukolw55vlIjY25At5DfeA0cVBA==",
+      "integrity": "sha512-w37yf2STc4gyXyLnb4DbbxqeK1tlyknz5cWyRxYHOqfjkUBMTL19E5VhyejLYPY4Txrbvj5rd7CsLw4b/1ZmYw==",
       "requires": {
+        "dotenv": "^8.2.0",
         "express": "~4.17.1"
       }
     },
@@ -69,6 +70,14 @@
       "version": "0.4.0",
       "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz",
       "integrity": "sha1-x57Zf380y48robyXkLzDZkdLS3k="
+    },
+    "axios": {
+      "version": "0.21.1",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.21.1.tgz",
+      "integrity": "sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==",
+      "requires": {
+        "follow-redirects": "^1.10.0"
+      }
     },
     "body-parser": {
       "version": "1.19.0",
@@ -147,18 +156,18 @@
       "integrity": "sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA="
     },
     "discord.js": {
-      "version": "12.5.1",
-      "resolved": "https://registry.npmjs.org/discord.js/-/discord.js-12.5.1.tgz",
-      "integrity": "sha512-VwZkVaUAIOB9mKdca0I5MefPMTQJTNg0qdgi1huF3iwsFwJ0L5s/Y69AQe+iPmjuV6j9rtKoG0Ta0n9vgEIL6w==",
+      "version": "12.5.2",
+      "resolved": "https://registry.npmjs.org/discord.js/-/discord.js-12.5.2.tgz",
+      "integrity": "sha512-PAJv2azCHZNz5VlSOcEYS3SPBmYvka0WHlWhTlHgorfJVRcm1xPwYFqPeU+8+YsWlUxkfgGUD2bnNkVx6vIqPw==",
       "requires": {
         "@discordjs/collection": "^0.1.6",
         "@discordjs/form-data": "^3.0.1",
         "abort-controller": "^3.0.0",
         "node-fetch": "^2.6.1",
-        "prism-media": "^1.2.2",
+        "prism-media": "^1.2.9",
         "setimmediate": "^1.0.5",
         "tweetnacl": "^1.0.3",
-        "ws": "^7.3.1"
+        "ws": "^7.4.4"
       }
     },
     "dotenv": {
@@ -241,6 +250,11 @@
         "statuses": "~1.5.0",
         "unpipe": "~1.0.0"
       }
+    },
+    "follow-redirects": {
+      "version": "1.13.3",
+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.13.3.tgz",
+      "integrity": "sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA=="
     },
     "forwarded": {
       "version": "0.1.2",
