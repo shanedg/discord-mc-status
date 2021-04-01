@@ -33,5 +33,8 @@ const exercisePlayersOnline = async () => {
   console.log('online:', playersOnline);
 };
 
-await exerciseRunAll();
-await exercisePlayersOnline();
+// ESLint can't parse top-level await out of the box.
+(async () => {
+  await exerciseRunAll();
+  await exercisePlayersOnline();
+})();
