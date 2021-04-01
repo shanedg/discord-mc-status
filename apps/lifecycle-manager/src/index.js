@@ -75,6 +75,7 @@ app.post('/stop', (_req, res) => {
 app.post('/start', (_req, res) => {
   // TODO: How configurable does this need to be?
   const startScript = path.resolve(dirname(process.argv[1]), 'start.sh');
+  // eslint-disable-next-line no-unused-vars
   exec(startScript, (error, stdout, stderr) => {
     if (error) {
       res.status(500).send(error);
