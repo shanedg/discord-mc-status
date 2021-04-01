@@ -11,6 +11,14 @@ A Node server that powers a [Discord app](https://discord.com/developers/applica
 No compilation step for this project.
 This is a no-op, always exits with 0 for Rush.
 
+### clean
+
+Remove temporary Rush files.
+
+### lint
+
+Lint JavaScript source files for problems.
+
 ### start
 
 Start the Discord bot server.

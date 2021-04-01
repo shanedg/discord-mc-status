@@ -39,3 +39,12 @@ commit any changes it creates under `common/config`;
 usually incremental,
 run with `--purge` to force a full reinstall of all projects
 * `rushx <command>` - run a command in the current project according to the working directory
+
+Custom commands:
+
+> Custom commands are configured in [command-line.json](./common/config/rush/command-line.json).
+See ["Custom commands"](https://rushjs.io/pages/maintainer/custom_commands/)
+for more information.
+
+* `rush clean`
+* `rush lint`
