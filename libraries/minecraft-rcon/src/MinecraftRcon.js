@@ -15,6 +15,8 @@ export default class MinecraftRcon {
    * @returns {Promise<Rcon>} Rcon connection
    */
   async getConnection() {
+    // TODO: What style async/await to prefer?
+    // https://gomakethings.com/how-to-structure-asynchronous-javascript-with-async-and-await/
     const rcon = new Rcon({
       host: this.host,
       port:  Number.parseInt(this.port),
