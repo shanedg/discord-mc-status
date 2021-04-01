@@ -16,6 +16,5 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
-    "rcon-client": "^4.2.3"
   }
 }
