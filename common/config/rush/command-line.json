@@ -172,6 +172,13 @@
       "summary": "Clean projects.",
       "description": "Removes build artifacts and temporary files.",
       "enableParallelism": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "lint",
+      "summary": "Lint JavaScript.",
+      "description": "Lints JavaScript files in projects.",
+      "enableParallelism": true
     }
   ],
 
