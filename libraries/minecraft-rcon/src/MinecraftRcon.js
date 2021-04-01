@@ -28,7 +28,7 @@ export default class MinecraftRcon {
         .then(resolve)
         .catch(error => reject(error));
     });
-  };
+  }
 
   /**
    * Create a new connection and run a single command.
