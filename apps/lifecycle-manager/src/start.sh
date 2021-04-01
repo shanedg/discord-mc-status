@@ -10,6 +10,6 @@ cleanup() {
 # TODO: start local server
 echo "starting local server!"
 
-/Users/shanegarrity/dev-minecraft/localserver/start.sh > /dev/null 2>&1
+# /Users/shanegarrity/dev-minecraft/localserver/start.sh > /dev/null 2>&1
 
 trap cleanup EXIT
