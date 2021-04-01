@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "exit 0",
+    "clean": "rm -rf .rush",
     "test": "node src/MinecraftRcon.test.js"
   },
   "type": "module",
