@@ -1,6 +1,6 @@
-import MinecraftRcon from './MinecraftRcon';
+import MinecraftRcon from './MinecraftRcon.js';
 
-export * from './utils';
+export * from './utils.js';
 
 export {
   MinecraftRcon,
