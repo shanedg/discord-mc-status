@@ -15,6 +15,10 @@ This is a no-op, always exits with 0 for Rush.
 
 Remove temporary Rush files.
 
+### dev
+
+Start the Minecraft manager server and restart when files change.
+
 ### lint
 
 Lint JavaScript source files for problems.
