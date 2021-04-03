@@ -4,7 +4,7 @@
  */
 
 // Node internals
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import path, { dirname } from 'path';
 
 // Third-party
@@ -27,6 +27,63 @@ if (!portString || !rconHost || !rconPort || !rconPassword) {
   throw new Error('Missing configuration. Check ./.env for required variables.');
 }
 
+/**
+ * Start the Minecraft server as a detached child process.
+ * @returns {Promise<ChildProcess>} A reference to the spawned process.
+ */
+const startMinecraftServer = () => {
+  // TODO: Where should these values be configured?
+  const minimumMemory = '512M';
+  const maximumMemory = '4G';
+  const maxGCPauseInMs = 100;
+  const minecraftWorkingDirectory = '/Users/shanegarrity/dev-minecraft/localserver/';
+
+  const serverArguments = [
+    '-server',
+    `-Xms${minimumMemory}`,
+    `-Xmx${maximumMemory}`,
+    '-XX:+UseG1GC',
+    `-XX:MaxGCPauseMillis=${maxGCPauseInMs}`,
+    '-jar',
+    'server.jar',
+    'nogui'
+  ];
+
+  const spawnOptions = {
+    // Detach spawned process and ignore parent file descriptors.
+    // Allows the child to continue running after the parent exits.
+    detached: true,
+    stdio: 'ignore',
+    // Run the spawned process in the minecraft working directory.
+    cwd: minecraftWorkingDirectory,
+  };
+
+  // Must be able to find the Java executable on the user's PATH.
+  // TODO: Make `java` location configurable.
+  const minecraftServer = spawn('java', serverArguments, spawnOptions);
+
+  // Prevent the parent from waiting for the detached process to exit.
+  // Allows the parent to exit independently of the spawned process.
+  minecraftServer.unref();
+
+  let badCommand = null;
+
+  minecraftServer.on('error', commandError => {
+    console.log('Bad command:', commandError);
+    badCommand = commandError;
+  });
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!badCommand) {
+        resolve(minecraftServer);
+      } else {
+        reject(badCommand);
+      }
+    }, 0);
+  });
+};
+
 const port = Number.parseInt(portString);
 const minecraft = new MinecraftRcon({
   host: rconHost,
@@ -36,7 +93,7 @@ const minecraft = new MinecraftRcon({
 
 const app = express();
 
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
   res
     .status(200)
     .send(`lifecycle-manager listening at http://localhost:${port}`);
@@ -45,23 +102,16 @@ app.get('/', (_req, res) => {
 /**
  * Handle a request to stop the Minecraft server.
  */
-app.post('/stop', (_req, res) => {
+app.post('/stop', (req, res) => {
+  // TODO: Check if there is anyone online first.
+  // Alternatively, broadcast a warning to anyone playing?
   minecraft.run('stop')
     .then(stopResponse => {
-      // expected response: { command: 'stop', response: 'Stopping the server' }
       res.status(200).send(stopResponse);
     })
     .catch(stopError => {
       res.status(500);
       if (stopError?.code === 'ECONNREFUSED') {
-        // expected response:
-        // {
-        //   errno: -61,
-        //   code: 'ECONNREFUSED',
-        //   syscall: 'connect',
-        //   address: '127.0.0.1',
-        //   port: 25575
-        // }
         res.status(400);
         console.log('Could not reach the server. Is it already stopped?');
       }
@@ -72,64 +122,71 @@ app.post('/stop', (_req, res) => {
 /**
  * Handle a request to start the Minecraft server.
  */
-app.post('/start', (_req, res) => {
-  // TODO: How configurable does this need to be?
-  const startScript = path.resolve(dirname(process.argv[1]), 'start.sh');
-  // eslint-disable-next-line no-unused-vars
-  exec(startScript, (error, stdout, stderr) => {
-    if (error) {
-      res.status(500).send(error);
-      return;
-    }
-
-    // res.status(200).send({ stderr, stdout });
-    res.sendStatus(200);
-  });
+app.post('/start', (req, res) => {
+  minecraft.getPlayersOnline()
+    .then(() => {
+      // A successful request for players online means the server is already running
+      // and we should not try to start it again.
+      res.status(409).send('Server is already running!');
+    })
+    .catch(() => {
+      // If the request for players online fails
+      // we can infer that the server is not running
+      // so go ahead and (try to) start it.
+      startMinecraftServer()
+        .then(() => {
+          res.sendStatus(200);
+        })
+        .catch(badCommand => {
+          res.status(500).send(badCommand);
+        });
+    });
 });
 
 /**
  * Handle a request to backup the Minecraft server.
  */
-app.post('/backup', (_req, res) => {
-  // TODO: How configurable does this need to be?
+app.post('/backup', (req, res) => {
+  // TODO: How configurable does the backup script need to be?
   const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
-  exec(backupScript, (error, stdout, stderr) => {
-    if (error) {
-      res.status(500).send(error);
-      return;
-    }
-
-    res.status(200).send({ stderr, stdout });
+  const backupProcess = spawn(backupScript, [], {
+    detached: true,
+    stdio: 'ignore',
   });
+
+  backupProcess.unref();
+  res.sendStatus(200);
 });
 
 /**
  * Handle a request to restart the server.
- * Will try to start the server if it's already stopped.
+ * Start the server if it's already stopped.
  */
-app.post('/restart', (_req, res) => {
-  const startScript = path.resolve(dirname(process.argv[1]), 'start.sh');
+app.post('/restart', (req, res) => {
   minecraft.run('stop')
     .then(() => {
-      exec(startScript, (error, stdout, stderr) => {
-        if (error) {
-          res.status(500).send(error);
-          return;
-        }
-
-        res.status(200).send({ stderr, stdout });
-      });
+      // If stop succeeds, (re)start the server.
+      // TODO: Any risk of starting before server has finished shutting down?
+      startMinecraftServer()
+        .then(() => {
+          res.sendStatus(200);
+        })
+        .catch(badCommand => {
+          res.status(500).send(badCommand);
+        });
+      return;
     })
     .catch(stopError => {
       if (stopError?.code === 'ECONNREFUSED') {
-        exec(startScript, (error, stdout, stderr) => {
-          if (error) {
-            res.status(500).send(error);
-            return;
-          }
-
-          res.status(200).send({ stderr, stdout });
-        });
+        // If the request to stop fails we can infer that the server is already stopped
+        // so go ahead and (try to) start it.
+        startMinecraftServer()
+          .then(() => {
+            res.sendStatus(200);
+          })
+          .catch(badCommand => {
+            res.status(500).send(badCommand);
+          });
         return;
       }
 
@@ -140,7 +197,7 @@ app.post('/restart', (_req, res) => {
 /**
  * Return a list of players that are currently online.
  */
-app.get('/online', (_req, res) => {
+app.get('/online', (req, res) => {
   minecraft.getPlayersOnline()
     .then(data => {
       res.status(200).send(data);
