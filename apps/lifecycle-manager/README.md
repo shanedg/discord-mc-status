@@ -17,6 +17,13 @@ Remove temporary Rush files.
 
 Start the Minecraft manager server and restart when files change.
 
+FYI, when [nodemon](https://www.npmjs.com/package/nodemon) detects file changes
+it sends a kill signal to every process in the process tree.
+That will include the spawned Minecraft server process.
+By default, the signal sent is `SIGUSR2`.
+Minecraft does not handle this signal and crashes.
+Instead, we use `--signal SIGTERM` so that the Minecraft server can shut down gracefully.
+
 ### lint
 
 Lint JavaScript source files for problems.
