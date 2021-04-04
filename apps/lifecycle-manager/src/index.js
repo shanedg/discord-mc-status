@@ -17,13 +17,26 @@ import MinecraftRcon from 'minecraft-rcon';
 dotenv.config();
 
 const {
+  MC_JAVA_EXECUTABLE: javaExecutable,
+  MC_MAX_GC_PAUSE: maxGCPauseInMs,
+  MC_MAXIMUM_MEMORY: maximumMemory,
+  MC_MINIMUM_MEMORY: minimumMemory,
+  MC_WORKING_DIRECTORY: minecraftWorkingDirectory,
   PORT: portString,
   RCON_HOST: rconHost,
   RCON_PORT: rconPort,
   RCON_SECRET: rconPassword,
 } = process.env;
 
-if (!portString || !rconHost || !rconPort || !rconPassword) {
+if (!javaExecutable ||
+  !maxGCPauseInMs ||
+  !maximumMemory ||
+  !minimumMemory ||
+  !minecraftWorkingDirectory ||
+  !portString ||
+  !rconHost ||
+  !rconPort ||
+  !rconPassword) {
   throw new Error('Missing configuration. Check ./.env for required variables.');
 }
 
@@ -31,13 +44,13 @@ if (!portString || !rconHost || !rconPort || !rconPassword) {
  * Start the Minecraft server as a detached child process.
  * @returns {Promise<ChildProcess>} A reference to the spawned process.
  */
-const startMinecraftServer = () => {
-  // TODO: Where should these values be configured?
-  const minimumMemory = '512M';
-  const maximumMemory = '4G';
-  const maxGCPauseInMs = 100;
-  const minecraftWorkingDirectory = '/Users/shanegarrity/dev-minecraft/localserver/';
-
+const startMinecraftServer = ({
+  javaExecutable,
+  maxGCPauseInMs,
+  maximumMemory,
+  minecraftWorkingDirectory,
+  minimumMemory,
+}) => {
   const serverArguments = [
     '-server',
     `-Xms${minimumMemory}`,
@@ -58,9 +71,7 @@ const startMinecraftServer = () => {
     cwd: minecraftWorkingDirectory,
   };
 
-  // Must be able to find the Java executable on the user's PATH.
-  // TODO: Make `java` location configurable.
-  const minecraftServer = spawn('java', serverArguments, spawnOptions);
+  const minecraftServer = spawn(javaExecutable, serverArguments, spawnOptions);
 
   // Prevent the parent from waiting for the detached process to exit.
   // Allows the parent to exit independently of the spawned process.
@@ -133,7 +144,7 @@ app.post('/start', (req, res) => {
       // If the request for players online fails
       // we can infer that the server is not running
       // so go ahead and (try to) start it.
-      startMinecraftServer()
+      startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
         .then(() => {
           res.sendStatus(200);
         })
@@ -167,7 +178,7 @@ app.post('/restart', (req, res) => {
     .then(() => {
       // If stop succeeds, (re)start the server.
       // TODO: Any risk of starting before server has finished shutting down?
-      startMinecraftServer()
+      startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
         .then(() => {
           res.sendStatus(200);
         })
@@ -180,7 +191,7 @@ app.post('/restart', (req, res) => {
       if (stopError?.code === 'ECONNREFUSED') {
         // If the request to stop fails we can infer that the server is already stopped
         // so go ahead and (try to) start it.
-        startMinecraftServer()
+        startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
           .then(() => {
             res.sendStatus(200);
           })
