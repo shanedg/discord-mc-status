@@ -80,23 +80,34 @@
         }
       }
     },
+    "@rush-temp/cloud-commands": {
+      "version": "file:projects/cloud-commands.tgz",
+      "integrity": "sha512-8oklbUvQCdIFDbxe3raeGO7+uAfi2aSzReXUyi6tMevQsi0wM2qhYm0T2p+MXJhP9oiCmX7X9BEgWfiBs3toSA==",
+      "requires": {
+        "dotenv": "^8.2.0",
+        "eslint": "~7.23.0",
+        "rcon-client": "^4.2.3"
+      }
+    },
     "@rush-temp/discord-bot": {
       "version": "file:projects/discord-bot.tgz",
-      "integrity": "sha512-dL0fHI11eRx50/giTx5jn4zOcOWQh5MQ03KfP0605sVv9vuSgAdUlTMUPZM5tfL+PsaFSt5DTOIWmJ1xED25cg==",
+      "integrity": "sha512-1ai3GH9VlcbU7+Hb0a1DCI3D3k75Ay//Zaeirbjw+91q/dOqyDsSTOMALzN1lNubhw/TZ5PrAd/vUStM9NvNLA==",
       "requires": {
         "axios": "~0.21.1",
         "discord.js": "^12.5.1",
         "dotenv": "^8.2.0",
-        "eslint": "~7.23.0"
+        "eslint": "~7.23.0",
+        "nodemon": "~2.0.7"
       }
     },
     "@rush-temp/lifecycle-manager": {
       "version": "file:projects/lifecycle-manager.tgz",
-      "integrity": "sha512-EJ8bXyH8A84rITlOSk9cp/IA8VxqTDzCzZ+IHseozUkj/drFcuLbNBOGlYR04gyomPQbZNC7wnUkcesgQ8LeTw==",
+      "integrity": "sha512-2cx6HTbW0MBkNP6ZGle0oz3GeGC4eVXZpj/3GFdop/Bo22TgNXzrGyMc3Qqg82pD6qzlnozWKOFvw7uTFF0yMQ==",
       "requires": {
         "dotenv": "^8.2.0",
         "eslint": "~7.23.0",
-        "express": "~4.17.1"
+        "express": "~4.17.1",
+        "nodemon": "~2.0.7"
       }
     },
     "@rush-temp/minecraft-rcon": {

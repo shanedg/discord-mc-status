@@ -468,6 +468,10 @@
     {
       "packageName": "minecraft-rcon",
       "projectFolder": "libraries/minecraft-rcon"
+    },
+    {
+      "packageName": "cloud-commands",
+      "projectFolder": "libraries/cloud-commands"
     }
   ]
 }
