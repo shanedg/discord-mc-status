@@ -2,6 +2,32 @@
 
 A Node server for managing the lifecycle of a vanilla Minecraft multiplayer server.
 
+## Configuration
+
+Important configuration values are set in a `.env` file in the project root.
+
+Start by copying [.env.sample](./.env.sample) to `.env`.
+At a minimum, you will need to set `MC_WORKING_DIRECTORY` to the location of the Minecraft server files
+and `RCON_SECRET` to the Minecraft server's Rcon password.
+
+Minecraft server arguments:
+
+* `MC_JAVA_EXECUTABLE` - path to Java binary
+* `MC_MAX_GC_PAUSE` - target for maximum Java garbage collection pause time in milliseconds
+* `MC_MAXIMUM_MEMORY` - maximum memory Minecraft
+* `MC_MINIMUM_MEMORY` - minimum memory Minecraft
+* `MC_WORKING_DIRECTORY` - location of the Minecraft server files
+
+`lifecycle-manager` values:
+
+* `PORT` - port for `lifecycle-manager` to listen on for server management requests
+
+Rcon values:
+
+* `RCON_HOST` - Minecraft server host
+* `RCON_PORT` - Minecraft server Rcon port
+* `RCON_SECRET` - Minecraft server Rcon password
+
 ## Commands
 
 ### build
