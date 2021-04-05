@@ -13,14 +13,12 @@ import { exec } from 'child_process';
  */
 export const associateElasticIPWithInstance = async (publicIP, instanceId) => {
   return new Promise((resolve, reject) => {
-    exec(`aws ec2 associate-address --output json --instance-id ${instanceId} --public-ip ${publicIP} --allow-reassociation`, (error, stdout, stderr) => {
+    exec(`aws ec2 associate-address --output json --instance-id ${instanceId} --public-ip ${publicIP} --allow-reassociation`, (error, stdout) => {
       if (error) {
-        console.log(`There was a problem associating elastic IP ${publicIP} with instance ${instanceId}`);
         reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
       }
-
-      console.log(stderr);
-      resolve(JSON.parse(stdout));
     });
   });
 };
@@ -34,13 +32,12 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
   return new Promise((resolve, reject) => {
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html#cli-aws
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
-    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId}`, (error, stdout, stderr) => {
+    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId}`, (error, stdout) => {
       if (error) {
-        console.log(`There was a problem launching an EC2 instance from template with Id ${templateId}:`, error);
         reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
       }
-      console.log(stderr);
-      resolve(JSON.parse(stdout));
     });
   });
 };
@@ -52,13 +49,12 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
  */
 export const terminateInstance = async instanceId => {
   return new Promise((resolve, reject) => {
-    exec(`aws ec2 terminate-instances --output json --instance-ids ${instanceId}`, (error, stdout, stderr) => {
+    exec(`aws ec2 terminate-instances --output json --instance-ids ${instanceId}`, (error, stdout) => {
       if (error) {
-        console.log(`There was a problem terminating an EC2 instance with Id ${instanceId}:`, error);
         reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
       }
-      console.log(stderr);
-      resolve(JSON.parse(stdout));
     });
   });
 };
