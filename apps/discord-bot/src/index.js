@@ -5,9 +5,18 @@
  * https://discordjs.guide/
  */
 
+// Third-party
 import axios from 'axios';
 import discord from 'discord.js';
 import dotenv from 'dotenv';
+
+// Ours
+import {
+  launchInstanceFromTemplate,
+  terminateInstance,
+} from 'cloud-commands';
+
+let lastInstanceId = null;
 
 dotenv.config();
 
@@ -16,7 +25,7 @@ const {
   LIFECYCLE_BASE_URL: lifecycleBaseUrl,
 } = process.env;
 
-const axiosInstance = axios.create({
+const lifecycleHost = axios.create({
   baseURL: lifecycleBaseUrl,
 });
 
@@ -40,52 +49,93 @@ bot.on('message', message => {
 
   switch (command) {
   case 'start':
-    message.channel.send('starting server...');
-    // TODO: check if server running
-    // TODO: capture instance id
-    // TODO: associate elastic ip with new instance
+    if (!lastInstanceId) {
+      launchInstanceFromTemplate()
+        .then(launchResult => {
+          const instanceId = launchResult.Instances[0].InstanceId;
+          console.log('Created instance with Id:', instanceId);
+          // TODO: this won't persist across bot restarts!
+          lastInstanceId = instanceId;
+          message.channel.send('The server is starting...');
+          return instanceId;
+        })
+        .catch(error => {
+          // Expected error if trying to start server before last one is finished terminating.
+          if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
+            message.channel.send('A previous version of the server is still shutting down, please try again in a few minutes.');
+          } else {
+            console.log('There was a problem launching a new EC2 instance:', error);
+            message.channel.send('There was a problem starting the server!');
+          }
+        });
 
-    // TODO: start?
-    //  aws ec2 run-instances --launch-template LaunchTemplateId=lt-0b091f225fe894a12
-
+      // TODO: can the new instance pull the latest backup and start the server via user-data?
+      // TODO: Or does this distributed system need more moving parts???
+    } else {
+      message.channel.send('The server is already running, nothing to do.');
+    }
     break;
   case 'stop':
-    message.channel.send('stopping server...');
-    axiosInstance.post('/stop')
-      .then(() => {
-        message.channel.send('server stopped.');
-      })
-      .catch(({ response }) => {
-        if (response?.status === 400) {
-          message.channel.send('connection refused, the server is (probably) already stopped.');
-        } else {
-          message.channel.send('there was an unexpected problem stopping the server!');
-        }
-      });
+    if (lastInstanceId) {
+      message.channel.send('Stopping the server...');
+      lifecycleHost.post('/stop')
+        .catch(stopError => {
+          const { response } = stopError;
+          if (response?.status === 400) {
+            console.log('The server may have been partially stopped.');
+            // Don't re-throw!
+            // The server process may have exited
+            // but the instance might still need to be cleaned up below.
+          } else {
+            console.log('Unexpected problem reaching lifecycle-manager:', stopError);
+            throw stopError;
+          }
+        })
+        // TODO: create backup before terminating the instance
+        .then(() => terminateInstance(lastInstanceId))
+        .then(() => {
+          console.log('Terminated instance with Id:', lastInstanceId);
+          lastInstanceId = null;
+          message.channel.send('Server stopped.');
+        })
+        .catch(error => {
+          console.log('Problem stopping the server:', error);
+          message.channel.send('There was a problem stopping the server :(');
+        });
+    } else {
+      // TODO: `lastInstanceId` won't persist if the node process is restarted
+      // TODO: check for a temporary file or something?
+      message.channel.send('No server running, nothing to do.');
+    }
     break;
   case 'online':
-    axiosInstance.get('/online')
+    lifecycleHost.get('/online')
       .then(({ data }) => {
-        message.channel.send(`online: ${data.length}/20\n${data.join(',')}`);
+        message.channel.send(`Online: ${data.length}/20\n${data.join(',')}`);
       })
-      .catch(({ response }) => {
+      .catch(onlineError => {
+        const { response } = onlineError;
         if (response?.status === 400) {
-          message.channel.send('connection refused, the server is probably stopped.');
+          message.channel.send('No server running.');
         } else {
-          message.channel.send('there was an unexpected problem checking who\'s online!');
+          console.log('Problem checking who\'s online:', onlineError);
+          message.channel.send('There was an unexpected problem checking who\'s online :(');
         }
       });
     break;
   case 'backup':
-    message.channel.send('starting backup tasks...');
+    message.channel.send('Backup tasks are not yet implemented...');
     // TODO: broadcast 30 second warning
     // TODO: turn off autosave
     // TODO: backup
     // TODO: turn on autosave
     // TODO: broadcast backup complete
     break;
+  case 'help':
   default:
-    message.channel.send('sorry?');
+    message.channel.send('Sorry?');
+    // TODO: display help summary of commands
+    // https://discordjs.guide/command-handling/adding-features.html#a-dynamic-help-command
   }
 });
 
