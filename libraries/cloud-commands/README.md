@@ -1,5 +1,15 @@
 # cloud-commands
 
+This package runs `aws-cli` commands from a subshell (`child_process.exec()`).
+
+> NOTE: All methods depend on `aws-cli` being configured for the shell!
+> The associated IAM profile must also have appropriate permissions.
+
+## API
+
+* `launchInstanceFromTemplate` - Run an AWS EC2 instance from a predefined launch template.
+* `terminateInstance` - Terminate an AWS EC2 instance.
+
 ## Commands
 
 ### build
@@ -20,4 +30,3 @@ Lint JavaScript source files for problems.
 > WARNING: Creates resources in the real, billable AWS environment!
 
 Exercise the package exports.
-Depends on the `aws-cli` being configured for the user shell.

@@ -44,3 +44,21 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
     });
   });
 };
+
+/**
+ * Terminate an AWS EC2 instance.
+ * @param {string} instanceId ID of an EC2 instance
+ * @returns {Promise<any>} Output of the aws-cli command in JSON format.
+ */
+export const terminateInstance = async instanceId => {
+  return new Promise((resolve, reject) => {
+    exec(`aws ec2 terminate-instances --output json --instance-ids ${instanceId}`, (error, stdout, stderr) => {
+      if (error) {
+        console.log(`There was a problem terminating an EC2 instance with Id ${instanceId}:`, error);
+        reject(error);
+      }
+      console.log(stderr);
+      resolve(JSON.parse(stdout));
+    });
+  });
+};
