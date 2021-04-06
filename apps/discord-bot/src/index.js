@@ -5,6 +5,12 @@
  * https://discordjs.guide/
  */
 
+// Node internals.
+import {
+  exec,
+  execSync,
+} from 'child_process';
+
 // Third-party
 import axios from 'axios';
 import discord from 'discord.js';
@@ -17,6 +23,41 @@ import {
 } from 'cloud-commands';
 
 let lastInstanceId = null;
+
+/**
+ * Persist the instance Id of a running server in a temporary file.
+ */
+const saveOnExit = () => {
+  if (!lastInstanceId) {
+    process.exit();
+  }
+
+  try {
+    execSync(`echo "${lastInstanceId}" > .temp-last-instance-id`);
+  } catch (error) {
+    console.log('Problem saving data to a temporary file:', error);
+  }
+  process.exit();
+};
+
+process.on('SIGINT', saveOnExit); // Ctrl-c
+process.on('SIGUSR2', saveOnExit); // nodemon signal
+
+exec('cat .temp-last-instance-id', (error, stdout, stderr) => {
+  if (error) {
+    if (stderr.includes('No such file or directory')) {
+      // No cached data.
+      return;
+    }
+
+    throw error;
+  } else {
+    // Recover cached data and remove temporary file.
+    lastInstanceId = stdout.trim();
+    console.log('Found cached instance with Id:', lastInstanceId);
+    execSync('rm .temp-last-instance-id');
+  }
+});
 
 dotenv.config();
 
@@ -54,7 +95,6 @@ bot.on('message', message => {
         .then(launchResult => {
           const instanceId = launchResult.Instances[0].InstanceId;
           console.log('Created instance with Id:', instanceId);
-          // TODO: this won't persist across bot restarts!
           lastInstanceId = instanceId;
           message.channel.send('The server is starting...');
           return instanceId;
@@ -62,7 +102,7 @@ bot.on('message', message => {
         .catch(error => {
           // Expected error if trying to start server before last one is finished terminating.
           if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
-            message.channel.send('A previous version of the server is still shutting down, please try again in a few minutes.');
+            message.channel.send('A previous version of the server is still running, please try again in a few minutes.');
           } else {
             console.log('There was a problem launching a new EC2 instance:', error);
             message.channel.send('There was a problem starting the server!');
@@ -103,8 +143,6 @@ bot.on('message', message => {
           message.channel.send('There was a problem stopping the server :(');
         });
     } else {
-      // TODO: `lastInstanceId` won't persist if the node process is restarted
-      // TODO: check for a temporary file or something?
       message.channel.send('No server running, nothing to do.');
     }
     break;
