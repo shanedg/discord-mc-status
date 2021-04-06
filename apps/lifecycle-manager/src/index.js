@@ -123,8 +123,8 @@ app.post('/stop', (req, res) => {
     .catch(stopError => {
       res.status(500);
       if (stopError?.code === 'ECONNREFUSED') {
+        // Infer that the server is already stopped.
         res.status(400);
-        console.log('Could not reach the server. Is it already stopped?');
       }
       res.send(stopError);
     });
