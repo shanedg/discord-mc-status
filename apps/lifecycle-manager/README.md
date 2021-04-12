@@ -20,6 +20,7 @@ Minecraft server arguments:
 or as a systemd service unit;
 if `true`, Java server arguments are ignored in favor of the `minecraft.service` definition
 * `MC_WORKING_DIRECTORY` - location of the Minecraft server files
+* `MC_WORLD_NAME` - unique identifier for Minecraft server backups
 
 `lifecycle-manager` values:
 

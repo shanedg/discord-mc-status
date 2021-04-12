@@ -202,11 +202,10 @@ app.post('/start', (req, res) => {
  * Handle a request to backup the Minecraft server.
  */
 app.post('/backup', (req, res) => {
-  // TODO: How configurable does the backup script need to be?
   const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
   const backupProcess = spawn(backupScript, [], {
-    detached: true,
-    stdio: 'ignore',
+    stdio: 'inherit',
+    cwd: minecraftWorkingDirectory,
   });
 
   backupProcess.unref();
