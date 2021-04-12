@@ -4,7 +4,7 @@
  */
 
 // Node internals
-import { spawn } from 'child_process';
+import { exec, spawn } from 'child_process';
 import path, { dirname } from 'path';
 
 // Third-party
@@ -21,6 +21,7 @@ const {
   MC_MAX_GC_PAUSE: maxGCPauseInMs,
   MC_MAXIMUM_MEMORY: maximumMemory,
   MC_MINIMUM_MEMORY: minimumMemory,
+  MC_USE_SYSTEMD: useSystemdString,
   MC_WORKING_DIRECTORY: minecraftWorkingDirectory,
   PORT: portString,
   RCON_HOST: rconHost,
@@ -36,15 +37,36 @@ if (!javaExecutable ||
   !portString ||
   !rconHost ||
   !rconPort ||
-  !rconPassword) {
+  !rconPassword ||
+  !useSystemdString
+) {
   throw new Error('Missing configuration. Check ./.env for required variables.');
 }
+
+const useSystemd = (useSystemdString.toLowerCase() === 'true' || useSystemdString == 1);
+
+/**
+ * Start the Minecraft server as a systemd service unit.
+ * @returns {Promise<string>} Result of service start command.
+ */
+const startSystemdService = () => {
+  return new Promise((resolve, reject) => {
+    exec('sudo service minecraft start', (error, stdout, stderr) => {
+      if (error) {
+        console.log(stderr);
+        reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
+      }
+    });
+  });
+};
 
 /**
  * Start the Minecraft server as a detached child process.
  * @returns {Promise<ChildProcess>} A reference to the spawned process.
  */
-const startMinecraftServer = ({
+const spawnJavaProcess = ({
   javaExecutable,
   maxGCPauseInMs,
   maximumMemory,
@@ -93,6 +115,28 @@ const startMinecraftServer = ({
       }
     }, 0);
   });
+};
+
+/**
+ * Start the Minecraft server either directly as a Java process or as a systemd service.
+ * @param {boolean} useSystemd Whether the server will run as a systemd service unit.
+ * @returns {Promise<*>} Either a reference to the spawned process or the result of the service start command.
+ */
+const startMinecraftServer = (useSystemd = false) => {
+  if (useSystemd) {
+    return startSystemdService();
+  }
+
+  // Options provided via environment variables.
+  const serverOptions = {
+    javaExecutable,
+    maxGCPauseInMs,
+    maximumMemory,
+    minecraftWorkingDirectory,
+    minimumMemory,
+  };
+
+  return spawnJavaProcess(serverOptions);
 };
 
 const port = Number.parseInt(portString);
@@ -144,7 +188,7 @@ app.post('/start', (req, res) => {
       // If the request for players online fails
       // we can infer that the server is not running
       // so go ahead and (try to) start it.
-      startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
+      startMinecraftServer(useSystemd)
         .then(() => {
           res.sendStatus(200);
         })
@@ -178,7 +222,7 @@ app.post('/restart', (req, res) => {
     .then(() => {
       // If stop succeeds, (re)start the server.
       // TODO: Any risk of starting before server has finished shutting down?
-      startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
+      startMinecraftServer(useSystemd)
         .then(() => {
           res.sendStatus(200);
         })
@@ -191,7 +235,7 @@ app.post('/restart', (req, res) => {
       if (stopError?.code === 'ECONNREFUSED') {
         // If the request to stop fails we can infer that the server is already stopped
         // so go ahead and (try to) start it.
-        startMinecraftServer({ javaExecutable, maxGCPauseInMs, maximumMemory, minecraftWorkingDirectory, minimumMemory })
+        startMinecraftServer(useSystemd)
           .then(() => {
             res.sendStatus(200);
           })

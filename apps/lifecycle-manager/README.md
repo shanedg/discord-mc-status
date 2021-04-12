@@ -14,8 +14,11 @@ Minecraft server arguments:
 
 * `MC_JAVA_EXECUTABLE` - path to Java binary
 * `MC_MAX_GC_PAUSE` - target for maximum Java garbage collection pause time in milliseconds
-* `MC_MAXIMUM_MEMORY` - maximum memory Minecraft
-* `MC_MINIMUM_MEMORY` - minimum memory Minecraft
+* `MC_MAXIMUM_MEMORY` - maximum memory for Java
+* `MC_MINIMUM_MEMORY` - minimum memory for Java
+* `MC_USE_SYSTEMD` - control whether the Minecraft server will run directly as a Java process
+or as a systemd service unit;
+if `true`, Java server arguments are ignored in favor of the `minecraft.service` definition
 * `MC_WORKING_DIRECTORY` - location of the Minecraft server files
 
 `lifecycle-manager` values:
