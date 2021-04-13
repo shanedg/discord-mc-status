@@ -37,7 +37,13 @@ bucket_folder="$s3_bucket$backup_path"
 
 echo "[backup]" "Determining backup name and destination..."
 
+# `s3 ls` returns a non-zero exit code when the bucket doesn't exist
+# or hasn't been created yet
+# https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html
+# https://awscli.amazonaws.com/v2/documentation/api/latest/topic/return-codes.html#cli-aws-help-return-codes
+set +e
 existing_backups=$(aws s3 ls "$bucket_folder")
+set -e
 # https://linuxize.com/post/how-to-check-if-string-contains-substring-in-bash/#using-wildcards
 while [[ "$existing_backups" == *"$backup_date-$backup_of_the_day"* ]]
 do
