@@ -252,7 +252,7 @@ app.post('/restart', (req, res) => {
  * Return a list of players that are currently online.
  */
 app.get('/online', (req, res) => {
-  minecraft.getPlayersOnline()
+  minecraft.run('list')
     .then(data => {
       res.status(200).send(data);
     })
