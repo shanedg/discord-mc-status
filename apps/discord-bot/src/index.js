@@ -147,19 +147,23 @@ bot.on('message', message => {
     }
     break;
   case 'online':
-    lifecycleHost.get('/online')
-      .then(({ data }) => {
-        message.channel.send(`Online: ${data.length}/20\n${data.join(',')}`);
-      })
-      .catch(onlineError => {
-        const { response } = onlineError;
-        if (response?.status === 400) {
-          message.channel.send('No server running.');
-        } else {
-          console.log('Problem checking who\'s online:', onlineError);
-          message.channel.send('There was an unexpected problem checking who\'s online :(');
-        }
-      });
+    if (lastInstanceId) {
+      lifecycleHost.get('/online')
+        .then(({ data }) => {
+          message.channel.send(`Online: ${data.length}/20\n${data.join(',')}`);
+        })
+        .catch(onlineError => {
+          const { response } = onlineError;
+          if (response?.status === 400) {
+            message.channel.send('No server running.');
+          } else {
+            console.log('Problem checking who\'s online:', onlineError);
+            message.channel.send('There was an unexpected problem checking who\'s online :(');
+          }
+        });
+    } else {
+      message.channel.send('No server running.');
+    }
     break;
   case 'backup':
     message.channel.send('Backup tasks are not yet implemented...');
