@@ -17,22 +17,21 @@ import MinecraftRcon from 'minecraft-rcon';
 dotenv.config();
 
 const {
-  MC_JAVA_EXECUTABLE: javaExecutable,
-  MC_MAX_GC_PAUSE: maxGCPauseInMs,
-  MC_MAXIMUM_MEMORY: maximumMemory,
-  MC_MINIMUM_MEMORY: minimumMemory,
+  // Required
   MC_USE_SYSTEMD: useSystemdString,
   MC_WORKING_DIRECTORY: minecraftWorkingDirectory,
   PORT: portString,
   RCON_HOST: rconHost,
   RCON_PORT: rconPort,
   RCON_SECRET: rconPassword,
+  // Required only if not using systemd
+  MC_JAVA_EXECUTABLE: javaExecutable,
+  MC_MAX_GC_PAUSE: maxGCPauseInMs,
+  MC_MAXIMUM_MEMORY: maximumMemory,
+  MC_MINIMUM_MEMORY: minimumMemory,
 } = process.env;
 
-if (!javaExecutable ||
-  !maxGCPauseInMs ||
-  !maximumMemory ||
-  !minimumMemory ||
+if (
   !minecraftWorkingDirectory ||
   !portString ||
   !rconHost ||
@@ -44,6 +43,17 @@ if (!javaExecutable ||
 }
 
 const useSystemd = (useSystemdString.toLowerCase() === 'true' || useSystemdString == 1);
+
+if (!useSystemd &&
+  (
+    !javaExecutable ||
+    !maxGCPauseInMs ||
+    !maximumMemory ||
+    !minimumMemory
+  )
+) {
+  throw new Error('Missing configuration. Check ./.env for required variables for Java process.');
+}
 
 /**
  * Start the Minecraft server as a systemd service unit.
