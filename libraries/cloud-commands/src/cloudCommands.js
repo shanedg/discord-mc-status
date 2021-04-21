@@ -26,7 +26,7 @@ export const associateElasticIPWithInstance = async (publicIP, instanceId) => {
 /**
  * Run an AWS EC2 instance from a predefined launch template.
  * @param {string} [templateId] Id of an EC2 launch template
- * @returns {Promise<any>} Output of the aws-cli command in JSON format.
+ * @returns {Promise<*>} Output of the aws-cli command in JSON format.
  */
 export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894a12', region = 'us-east-1') => {
   return new Promise((resolve, reject) => {
@@ -45,7 +45,7 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
 /**
  * Terminate an AWS EC2 instance.
  * @param {string} instanceId ID of an EC2 instance
- * @returns {Promise<any>} Output of the aws-cli command in JSON format.
+ * @returns {Promise<*>} Output of the aws-cli command in JSON format.
  */
 export const terminateInstance = async instanceId => {
   return new Promise((resolve, reject) => {
