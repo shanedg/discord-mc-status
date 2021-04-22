@@ -10,7 +10,7 @@ import {
   exec,
   execSync,
 } from 'child_process';
-import path from 'path';
+import path, { dirname } from 'path';
 
 // Third-party
 import axios from 'axios';
@@ -23,6 +23,8 @@ import {
   launchInstanceFromTemplateWithUserData,
   terminateInstance,
 } from 'cloud-commands';
+
+const __dirname = dirname(import.meta.url);
 
 let lastInstanceId = null;
 
@@ -120,7 +122,7 @@ bot.on('message', (message) => {
       const worldName = commandArguments[2];
       // launch a new named world
       launchInstanceFromTemplateWithUserData({
-        userDataLocation: path.resolve('./user-data-new.sh'),
+        userDataLocation: path.join(__dirname, './user-data-new.sh'),
         worldName,
       })
         .then(launchResult => {
@@ -143,7 +145,7 @@ bot.on('message', (message) => {
       const worldName = commandArguments[1];
       // launch an existing named world
       launchInstanceFromTemplateWithUserData({
-        userDataLocation: path.resolve('./user-data-existing.sh'),
+        userDataLocation: path.join(__dirname, './user-data-existing.sh'),
         worldName,
       })
         .then(launchResult => {
