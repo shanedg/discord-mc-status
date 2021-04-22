@@ -10,6 +10,7 @@ import {
   exec,
   execSync,
 } from 'child_process';
+import path from 'path';
 
 // Third-party
 import axios from 'axios';
@@ -19,6 +20,7 @@ import dotenv from 'dotenv';
 // Ours
 import {
   launchInstanceFromTemplate,
+  launchInstanceFromTemplateWithUserData,
   terminateInstance,
 } from 'cloud-commands';
 
@@ -77,7 +79,7 @@ bot.once('ready', () => {
   console.log('discord-bot ready!');
 });
 
-bot.on('message', message => {
+bot.on('message', (message) => {
   const { content, author } = message;
   const watchWord = '!server';
 
@@ -87,11 +89,15 @@ bot.on('message', message => {
   }
 
   const watchWordPattern = new RegExp(`\\${watchWord} `);
-  const command = content.replace(watchWordPattern, '');
+  const commandArguments = content.replace(watchWordPattern, '').split(' ');
+  const command = commandArguments[0];
 
   switch (command) {
   case 'start':
-    if (!lastInstanceId) {
+    // Launch legacy smp world
+    if (lastInstanceId) {
+      message.channel.send('The server is already running, nothing to do.');
+    } else if (!lastInstanceId && commandArguments.length === 1) {
       launchInstanceFromTemplate()
         .then(launchResult => {
           const instanceId = launchResult.Instances[0].InstanceId;
@@ -110,10 +116,54 @@ bot.on('message', message => {
           }
         });
 
-      // TODO: can the new instance pull the latest backup and start the server via user-data?
-      // TODO: Or does this distributed system need more moving parts???
+    } else if (commandArguments.length > 2 && commandArguments[1] === 'new') {
+      const worldName = commandArguments[2];
+      // launch a new named world
+      launchInstanceFromTemplateWithUserData({
+        userDataLocation: path.resolve('./user-data-new.sh'),
+        worldName,
+      })
+        .then(launchResult => {
+          const instanceId = launchResult.Instances[0].InstanceId;
+          console.log(`Created instance of new world ${worldName} with Id: ${instanceId}`);
+          lastInstanceId = instanceId;
+          message.channel.send('The server is starting...');
+          return instanceId;
+        })
+        .catch(error => {
+          // Expected error if trying to start server before last one is finished terminating.
+          if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
+            message.channel.send('A previous version of the server is still running, please try again in a few minutes.');
+          } else {
+            console.log('There was a problem launching a new EC2 instance:', error);
+            message.channel.send('There was a problem starting the server!');
+          }
+        });
+    } else if (commandArguments.length > 1 && commandArguments[1] !== 'new') {
+      const worldName = commandArguments[1];
+      // launch an existing named world
+      launchInstanceFromTemplateWithUserData({
+        userDataLocation: path.resolve('./user-data-existing.sh'),
+        worldName,
+      })
+        .then(launchResult => {
+          const instanceId = launchResult.Instances[0].InstanceId;
+          console.log(`Created instance of existing world ${worldName} with Id: ${instanceId}`);
+          lastInstanceId = instanceId;
+          message.channel.send('The server is starting...');
+          return instanceId;
+        })
+        .catch(error => {
+          // Expected error if trying to start server before last one is finished terminating.
+          if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
+            message.channel.send('A previous version of the server is still running, please try again in a few minutes.');
+          } else {
+            console.log('There was a problem launching a new EC2 instance:', error);
+            message.channel.send('There was a problem starting the server!');
+          }
+        });
     } else {
-      message.channel.send('The server is already running, nothing to do.');
+      message.channel.send('Bad request. Try "!server start [new] [worldname]"');
     }
     break;
   case 'stop':
@@ -133,6 +183,7 @@ bot.on('message', message => {
           }
         })
         // TODO: create backup before terminating the instance
+        // .then(() => )
         .then(() => terminateInstance(lastInstanceId))
         .then(() => {
           console.log('Terminated instance with Id:', lastInstanceId);
