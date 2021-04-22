@@ -1,4 +1,5 @@
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
+import fs from 'fs';
 
 /**
  * Attach an Elastic IP address to a running instance.
@@ -33,6 +34,63 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html#cli-aws
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
     exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region}`, (error, stdout) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
+      }
+    });
+  });
+};
+
+/**
+ * Get a secure value from AWS SSM Parameter store.
+ * @param {string} path SSM Parameter name
+ * @param {string} region AWS Region
+ * @returns {*} Output of the aws-cli command in JSON format.
+ */
+const getSSMParameter = (path, region = 'us-east-1') => {
+  // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ssm/get-parameter.html
+  const results = execSync(`aws ssm get-parameter --output json --name "${path}" --with-decryption --region ${region}`, { encoding: 'utf-8' });
+  return JSON.parse(results);
+};
+
+/**
+ * Run an AWS EC2 instance from a predefined launch template.
+ * Override the template user data to support creating new worlds
+ * and loading existing ones from a backup.
+ * @param {*} launchOptions Specify template, region, and user data for run-instances command;
+ * also, the world name
+ * @returns {Promise<*>} Output of the aws-cli command in JSON format.
+ */
+export const launchInstanceFromTemplateWithUserData = async (launchOptions) => {
+  const defaultOptions = {
+    templateId: 'lt-0b091f225fe894a12',
+    region: 'us-east-1',
+  };
+
+  const { templateId, region, userDataLocation, worldName } = {
+    ...defaultOptions,
+    ...launchOptions,
+  };
+
+  if (!templateId ||
+    !region ||
+    !userDataLocation ||
+    !worldName
+  ) {
+    throw new Error('launchInstanceFromTemplateWithUserData: Missing required options');
+  }
+
+  return new Promise((resolve, reject) => {
+    const shellScript = fs.readFileSync(userDataLocation, { encoding: 'utf-8' });
+    const populatedWorldName = shellScript.replace('<REPLACE_ME_WORLD_NAME>', worldName);
+    const results = getSSMParameter('/mc/rcon/secret');
+    const rconSecret = results.Parameter.Value.replace('$', '\\$');
+    const populatedRconSecret = populatedWorldName.replace('<REPLACE_ME_RCON_SECRET>', rconSecret);
+    const encodedBase64 = Buffer.from(populatedRconSecret).toString('base64');
+
+    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --user-data '${encodedBase64}'`, (error, stdout) => {
       if (error) {
         reject(error);
       } else {
