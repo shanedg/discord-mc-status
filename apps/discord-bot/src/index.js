@@ -123,8 +123,10 @@ bot.on('message', (message) => {
     } else if (commandArguments.length > 2 && commandArguments[1] === 'new') {
       const worldName = commandArguments[2];
       // launch a new named world
+      const userData = readFileSync(path.join(__dirname, 'user-data-new.sh'), { encoding: 'utf-8' });
+
       launchInstanceFromTemplateWithUserData({
-        userDataLocation: path.join(__dirname, './user-data-new.sh'),
+        userData,
         worldName,
       })
         .then(launchResult => {
@@ -146,8 +148,10 @@ bot.on('message', (message) => {
     } else if (commandArguments.length > 1 && commandArguments[1] !== 'new') {
       const worldName = commandArguments[1];
       // launch an existing named world
+      const userData = readFileSync(path.join(__dirname, 'user-data-existing.sh'), { encoding: 'utf-8' });
+
       launchInstanceFromTemplateWithUserData({
-        userDataLocation: path.join(__dirname, './user-data-existing.sh'),
+        userData,
         worldName,
       })
         .then(launchResult => {
