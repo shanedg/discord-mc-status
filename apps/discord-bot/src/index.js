@@ -10,6 +10,8 @@ import {
   exec,
   execSync,
 } from 'child_process';
+import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
 import path, { dirname } from 'path';
 
 // Third-party
@@ -24,7 +26,7 @@ import {
   terminateInstance,
 } from 'cloud-commands';
 
-const __dirname = dirname(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let lastInstanceId = null;
 
