@@ -1,5 +1,4 @@
 import { exec, execSync } from 'child_process';
-import fs from 'fs';
 
 /**
  * Attach an Elastic IP address to a running instance.
@@ -69,28 +68,29 @@ export const launchInstanceFromTemplateWithUserData = async (launchOptions) => {
     region: 'us-east-1',
   };
 
-  const { templateId, region, userDataLocation, worldName } = {
+  const { templateId, region, userData, worldName } = {
     ...defaultOptions,
     ...launchOptions,
   };
 
   if (!templateId ||
     !region ||
-    !userDataLocation ||
+    !userData ||
     !worldName
   ) {
     throw new Error('launchInstanceFromTemplateWithUserData: Missing required options');
   }
 
   return new Promise((resolve, reject) => {
-    const shellScript = fs.readFileSync(userDataLocation, { encoding: 'utf-8' });
-    const populatedWorldName = shellScript.replace('<REPLACE_ME_WORLD_NAME>', worldName);
+    const populatedWorldName = userData.replace('<REPLACE_ME_WORLD_NAME>', worldName);
     const results = getSSMParameter('/mc/rcon/secret');
     const rconSecret = results.Parameter.Value.replace('$', '\\$');
     const populatedRconSecret = populatedWorldName.replace('<REPLACE_ME_RCON_SECRET>', rconSecret);
     const encodedBase64 = Buffer.from(populatedRconSecret).toString('base64');
 
-    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --user-data '${encodedBase64}'`, (error, stdout) => {
+    const command = `aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --user-data '${encodedBase64}'`;
+
+    exec(command, (error, stdout) => {
       if (error) {
         reject(error);
       } else {
