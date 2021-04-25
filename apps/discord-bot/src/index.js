@@ -207,12 +207,16 @@ bot.on('message', (message) => {
       });
     break;
   case 'backup':
-    message.channel.send('Backup tasks are not yet implemented...');
     // TODO: broadcast 30 second warning
-    // TODO: turn off autosave
-    // TODO: backup
-    // TODO: turn on autosave
     // TODO: broadcast backup complete
+    lifecycleHost.post('/backup')
+      .then(() => {
+        message.channel.send('Backup started...');
+      })
+      .catch(backupError => {
+        console.log('Backup error:', backupError);
+        message.channel.send('There was a problem starting a backup!');
+      });
     break;
   case 'help':
   default:
