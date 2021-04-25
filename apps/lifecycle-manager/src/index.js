@@ -212,9 +212,11 @@ app.post('/start', (req, res) => {
  * Handle a request to backup the Minecraft server.
  */
 app.post('/backup', (req, res) => {
-  minecraft.run('save-all')
-    .then(saveAllResult => {
-      console.log('save-all', saveAllResult);
+  minecraft.runAll([
+    'say Create backup',
+    'save-all',
+  ])
+    .then(() => {
       const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
       const backupProcess = spawn(backupScript, [], {
         stdio: 'inherit',
