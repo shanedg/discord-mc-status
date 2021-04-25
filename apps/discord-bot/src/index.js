@@ -120,10 +120,22 @@ bot.on('message', (message) => {
           }
         });
 
-    } else if (commandArguments.length > 2 && commandArguments[1] === 'new') {
-      const worldName = commandArguments[2];
-      // launch a new named world
-      const userData = readFileSync(path.join(__dirname, 'user-data-new.sh'), { encoding: 'utf-8' });
+    } else if (!lastInstanceId && commandArguments.length > 1) {
+      const requestNewWorld = commandArguments[1] === 'new';
+      const newWorldNameProvided = commandArguments.length > 2;
+
+      if (requestNewWorld && !newWorldNameProvided) {
+        message.channel.send('Bad request. Try "!server start [new] [world-name]"');
+        return;
+      }
+      const isNewNamedWorld = requestNewWorld && newWorldNameProvided;
+      const worldName = isNewNamedWorld ? commandArguments[2] : commandArguments[1];
+
+      // Launch a named world
+      const userData = readFileSync(
+        path.join(__dirname, isNewNamedWorld ? 'user-data-new.sh' : 'user-data-existing.sh'),
+        { encoding: 'utf-8' }
+      );
 
       launchInstanceFromTemplateWithUserData({
         userData,
@@ -131,7 +143,7 @@ bot.on('message', (message) => {
       })
         .then(launchResult => {
           const instanceId = launchResult.Instances[0].InstanceId;
-          console.log(`Created instance of new world ${worldName} with Id: ${instanceId}`);
+          console.log(`Created instance of ${isNewNamedWorld ? 'new' : 'existing'} world ${worldName} with Id: ${instanceId}`);
           lastInstanceId = instanceId;
           message.channel.send('The server is starting...');
           return instanceId;
@@ -145,33 +157,6 @@ bot.on('message', (message) => {
             message.channel.send('There was a problem starting the server!');
           }
         });
-    } else if (commandArguments.length > 1 && commandArguments[1] !== 'new') {
-      const worldName = commandArguments[1];
-      // launch an existing named world
-      const userData = readFileSync(path.join(__dirname, 'user-data-existing.sh'), { encoding: 'utf-8' });
-
-      launchInstanceFromTemplateWithUserData({
-        userData,
-        worldName,
-      })
-        .then(launchResult => {
-          const instanceId = launchResult.Instances[0].InstanceId;
-          console.log(`Created instance of existing world ${worldName} with Id: ${instanceId}`);
-          lastInstanceId = instanceId;
-          message.channel.send('The server is starting...');
-          return instanceId;
-        })
-        .catch(error => {
-          // Expected error if trying to start server before last one is finished terminating.
-          if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
-            message.channel.send('A previous version of the server is still running, please try again in a few minutes.');
-          } else {
-            console.log('There was a problem launching a new EC2 instance:', error);
-            message.channel.send('There was a problem starting the server!');
-          }
-        });
-    } else {
-      message.channel.send('Bad request. Try "!server start [new] [worldname]"');
     }
     break;
   case 'stop':
