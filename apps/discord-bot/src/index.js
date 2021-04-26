@@ -193,8 +193,8 @@ bot.on('message', (message) => {
     break;
   case 'online':
     lifecycleHost.get('/online')
-      .then(({ data }) => {
-        message.channel.send(`Online: ${data.length}/20\n${data.join(',')}`);
+      .then(({ players }) => {
+        message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
       })
       .catch(onlineError => {
         const { response } = onlineError;
