@@ -2,6 +2,7 @@
 
 import {
   associateElasticIPWithInstance,
+  describeInstance,
   launchInstanceFromTemplate,
   launchInstanceFromTemplateWithUserData,
   terminateInstance,
@@ -9,6 +10,7 @@ import {
 
 export {
   associateElasticIPWithInstance,
+  describeInstance,
   launchInstanceFromTemplate,
   launchInstanceFromTemplateWithUserData,
   terminateInstance,

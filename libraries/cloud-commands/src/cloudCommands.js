@@ -111,6 +111,23 @@ export const launchInstanceFromTemplateWithUserData = async (launchOptions) => {
 };
 
 /**
+ * Get information about an AWS EC2 instance.
+ * @param {string} instanceId ID of an EC2 instance
+ * @returns {Promise<*>} Output of the aws-cli command in JSON format.
+ */
+export const describeInstance = async instanceId => {
+  return new Promise((resolve, reject) => {
+    exec(`aws ec2 describe-instances --output json --instance-ids ${instanceId}`, (error, stdout) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(JSON.parse(stdout));
+      }
+    });
+  });
+};
+
+/**
  * Terminate an AWS EC2 instance.
  * @param {string} instanceId ID of an EC2 instance
  * @returns {Promise<*>} Output of the aws-cli command in JSON format.

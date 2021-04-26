@@ -7,6 +7,7 @@ This package runs `aws-cli` commands from a subshell (`child_process.exec()`).
 
 ## API
 
+* `describeInstance` - Get information about a running AWS EC2 instance.
 * `launchInstanceFromTemplate` - Run an AWS EC2 instance from a predefined launch template.
 * `launchInstanceFromTemplateWithUserData` - Run an AWS EC2 instance from a launch template
 and customize user data.
