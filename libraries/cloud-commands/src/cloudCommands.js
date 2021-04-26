@@ -1,5 +1,8 @@
 import { exec, execSync } from 'child_process';
 
+// TODO: replace 'map' subdomain with 'craft'
+const legacySMPNetworkInterfaceId = 'eni-01eb358d0340eee1e';
+
 /**
  * Attach an Elastic IP address to a running instance.
  * UNUSED: The `associate-address` operation cannot succeed against "pending" instances.
@@ -32,7 +35,7 @@ export const launchInstanceFromTemplate = async (templateId = 'lt-0b091f225fe894
   return new Promise((resolve, reject) => {
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html#cli-aws
     // https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/run-instances.html
-    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region}`, (error, stdout) => {
+    exec(`aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --network-interfaces NetworkInterfaceId=${legacySMPNetworkInterfaceId},DeviceIndex=0`, (error, stdout) => {
       if (error) {
         reject(error);
       } else {
