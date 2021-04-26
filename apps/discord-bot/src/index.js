@@ -161,22 +161,24 @@ bot.on('message', (message) => {
     break;
   case 'stop':
     if (lastInstanceId) {
-      message.channel.send('Stopping the server...');
-      lifecycleHost.post('/stop')
-        .catch(stopError => {
-          const { response } = stopError;
+      message.channel.send('Creating a backup...');
+      lifecycleHost.post('/backup')
+        .then(() => {
+          message.channel.send('Stopping the server...');
+          return lifecycleHost.post('/stop');
+        })
+        .catch(lifecycleError => {
+          const { response } = lifecycleError;
           if (response?.status === 400) {
             console.log('The server may have been partially stopped.');
             // Don't re-throw!
             // The server process may have exited
             // but the instance might still need to be cleaned up below.
           } else {
-            console.log('Unexpected problem reaching lifecycle-manager:', stopError);
-            throw stopError;
+            console.log('Unexpected problem reaching lifecycle-manager:', lifecycleError);
+            throw lifecycleError;
           }
         })
-        // TODO: create backup before terminating the instance
-        // .then(() => )
         .then(() => terminateInstance(lastInstanceId))
         .then(() => {
           console.log('Terminated instance with Id:', lastInstanceId);
