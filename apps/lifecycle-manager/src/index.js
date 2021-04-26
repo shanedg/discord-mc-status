@@ -4,7 +4,7 @@
  */
 
 // Node internals
-import { exec, spawn } from 'child_process';
+import { exec, execSync, spawn } from 'child_process';
 import path, { dirname } from 'path';
 
 // Third-party
@@ -248,17 +248,13 @@ app.post('/backup-sync', (req, res) => {
       console.log('Creating backup anyway.');
     })
     .then(() => {
-      return new Promise((resolve, reject) => {
-        const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
-        exec(backupScript, (error, stdout, stderr) => {
-          if (error) {
-            console.log(stderr);
-            reject(error);
-          } else {
-            resolve(stdout);
-          }
-        });
+      const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
+      execSync(backupScript, {
+        cwd: minecraftWorkingDirectory,
+        encoding: 'utf-8',
+        stdio: 'inherit',
       });
+      res.sendStatus(200);
     })
     .catch(backupFailure => {
       res.status(500).send(backupFailure);
