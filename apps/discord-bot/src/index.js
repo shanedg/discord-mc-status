@@ -21,6 +21,7 @@ import dotenv from 'dotenv';
 
 // Ours
 import {
+  describeInstance,
   launchInstanceFromTemplate,
   launchInstanceFromTemplateWithUserData,
   terminateInstance,
@@ -29,6 +30,7 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let lastInstanceId = null;
+let lastInstanceIpAddress = null;
 
 /**
  * Persist the instance Id of a running server in a temporary file.
@@ -40,6 +42,7 @@ const saveOnExit = () => {
 
   try {
     execSync(`echo "${lastInstanceId}" > .temp-last-instance-id`);
+    execSync(`echo "${lastInstanceIpAddress}" > .temp-last-ip-address`);
   } catch (error) {
     console.log('Problem saving data to a temporary file:', error);
   }
@@ -66,16 +69,28 @@ exec('cat .temp-last-instance-id', (error, stdout, stderr) => {
   }
 });
 
+exec('cat .temp-last-ip-address', (error, stdout, stderr) => {
+  if (error) {
+    if (stderr.includes('No such file or directory')) {
+      // No cached data.
+      return;
+    }
+
+    throw error;
+  } else {
+    // Recover cached data and remove temporary file.
+    lastInstanceIpAddress = stdout.trim();
+    console.log('Found cached IP address:', lastInstanceIpAddress);
+    execSync('rm .temp-last-ip-address');
+  }
+});
+
 dotenv.config();
 
 const {
   BOT_TOKEN: appBotToken,
-  LIFECYCLE_BASE_URL: lifecycleBaseUrl,
+  LIFECYCLE_PORT: lifecyclePort,
 } = process.env;
-
-const lifecycleHost = axios.create({
-  baseURL: lifecycleBaseUrl,
-});
 
 const bot = new discord.Client();
 
@@ -107,7 +122,8 @@ bot.on('message', (message) => {
           const instanceId = launchResult.Instances[0].InstanceId;
           console.log('Created instance with Id:', instanceId);
           lastInstanceId = instanceId;
-          message.channel.send('The server is starting...');
+          // TODO: update 'map' subdomain to 'craft'
+          message.channel.send('The server is starting up at map.trshcmpctr.com');
           return instanceId;
         })
         .catch(error => {
@@ -145,8 +161,21 @@ bot.on('message', (message) => {
           const instanceId = launchResult.Instances[0].InstanceId;
           console.log(`Created instance of ${isNewNamedWorld ? 'new' : 'existing'} world ${worldName} with Id: ${instanceId}`);
           lastInstanceId = instanceId;
-          message.channel.send('The server is starting...');
           return instanceId;
+        })
+        .then(instanceId => {
+          return describeInstance(instanceId);
+        })
+        .then(instanceDescription => {
+          const { InstanceId, PublicDnsName, PublicIpAddress } = instanceDescription.Reservations[0].Instances[0];
+          lastInstanceIpAddress = PublicIpAddress;
+          console.log(`Public DNS Name: ${PublicDnsName}\nPublic IP Address: ${PublicIpAddress}`);
+          message.channel.send(`The server is starting up at ${PublicIpAddress}`);
+          return {
+            InstanceId,
+            PublicDnsName,
+            PublicIpAddress,
+          };
         })
         .catch(error => {
           // Expected error if trying to start server before last one is finished terminating.
@@ -162,10 +191,10 @@ bot.on('message', (message) => {
   case 'stop':
     if (lastInstanceId) {
       message.channel.send('Creating a backup...');
-      lifecycleHost.post('/backup')
+      axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/backup`)
         .then(() => {
           message.channel.send('Stopping the server...');
-          return lifecycleHost.post('/stop');
+          return axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/stop`);
         })
         .catch(lifecycleError => {
           const { response } = lifecycleError;
@@ -194,7 +223,7 @@ bot.on('message', (message) => {
     }
     break;
   case 'online':
-    lifecycleHost.get('/online')
+    axios.get(`${lastInstanceIpAddress}:${lifecyclePort}/online`)
       .then(({ players }) => {
         message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
       })
@@ -211,7 +240,7 @@ bot.on('message', (message) => {
   case 'backup':
     // TODO: broadcast 30 second warning
     // TODO: broadcast backup complete
-    lifecycleHost.post('/backup')
+    axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/backup`)
       .then(() => {
         message.channel.send('Backup started...');
       })
