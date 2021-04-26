@@ -51,6 +51,7 @@ const saveOnExit = () => {
 
 process.on('SIGINT', saveOnExit); // Ctrl-c
 process.on('SIGUSR2', saveOnExit); // nodemon signal
+process.on('SIGTERM', saveOnExit); // systemd 'stop' signal
 process.on('exit', saveOnExit); // any exit?
 
 exec('cat .temp-last-instance-id', (error, stdout, stderr) => {
