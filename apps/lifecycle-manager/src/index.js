@@ -236,6 +236,36 @@ app.post('/backup', (req, res) => {
 });
 
 /**
+ * Synchronously handle a request to backup the Minecraft server.
+ */
+app.post('/backup-sync', (req, res) => {
+  minecraft.runAll([
+    'say Create backup',
+    'save-all',
+  ])
+    .catch(rconError => {
+      console.log('Problem communicating with the Minecraft server:', rconError);
+      console.log('Creating backup anyway.');
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
+        exec(backupScript, (error, stdout, stderr) => {
+          if (error) {
+            console.log(stderr);
+            reject(error);
+          } else {
+            resolve(stdout);
+          }
+        });
+      });
+    })
+    .catch(backupFailure => {
+      res.status(500).send(backupFailure);
+    });
+});
+
+/**
  * Handle a request to restart the server.
  * Start the server if it's already stopped.
  */
