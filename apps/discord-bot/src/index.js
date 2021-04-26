@@ -191,10 +191,10 @@ bot.on('message', (message) => {
   case 'stop':
     if (lastInstanceId) {
       message.channel.send('Creating a backup...');
-      axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/backup`)
+      axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup`)
         .then(() => {
           message.channel.send('Stopping the server...');
-          return axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/stop`);
+          return axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/stop`);
         })
         .catch(lifecycleError => {
           const { response } = lifecycleError;
@@ -223,7 +223,7 @@ bot.on('message', (message) => {
     }
     break;
   case 'online':
-    axios.get(`${lastInstanceIpAddress}:${lifecyclePort}/online`)
+    axios.get(`http://${lastInstanceIpAddress}:${lifecyclePort}/online`)
       .then(({ players }) => {
         message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
       })
@@ -240,7 +240,7 @@ bot.on('message', (message) => {
   case 'backup':
     // TODO: broadcast 30 second warning
     // TODO: broadcast backup complete
-    axios.post(`${lastInstanceIpAddress}:${lifecyclePort}/backup`)
+    axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup`)
       .then(() => {
         message.channel.send('Backup started...');
       })
