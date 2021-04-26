@@ -1,5 +1,12 @@
 import { exec, execSync } from 'child_process';
 
+const minecraftServerSecurityGroupIds = [
+  'sg-06660e98d1262583c',
+  'sg-0f12beb847a2b6374',
+  'sg-16d1976a',
+  'sg-07c460c5f0d488981'
+];
+
 // TODO: replace 'map' subdomain with 'craft'
 const legacySMPNetworkInterfaceId = 'eni-01eb358d0340eee1e';
 
@@ -91,7 +98,7 @@ export const launchInstanceFromTemplateWithUserData = async (launchOptions) => {
     const populatedRconSecret = populatedWorldName.replace('<REPLACE_ME_RCON_SECRET>', rconSecret);
     const encodedBase64 = Buffer.from(populatedRconSecret).toString('base64');
 
-    const command = `aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --user-data '${encodedBase64}'`;
+    const command = `aws ec2 run-instances --output json --launch-template LaunchTemplateId=${templateId} --region ${region} --user-data '${encodedBase64}' --security-group-ids ${minecraftServerSecurityGroupIds.join(' ')}`;
 
     exec(command, (error, stdout) => {
       if (error) {
