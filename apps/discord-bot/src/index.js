@@ -192,7 +192,7 @@ bot.on('message', (message) => {
   case 'stop':
     if (lastInstanceId) {
       message.channel.send('Creating a backup...');
-      axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup`)
+      axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup-sync`)
         .then(() => {
           message.channel.send('Stopping the server...');
           return axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/stop`);
