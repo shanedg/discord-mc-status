@@ -212,6 +212,7 @@ bot.on('message', (message) => {
         .then(() => {
           console.log('Terminated instance with Id:', lastInstanceId);
           lastInstanceId = null;
+          lastInstanceIpAddress = null;
           message.channel.send('Server stopped.');
         })
         .catch(error => {
