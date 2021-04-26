@@ -226,7 +226,9 @@ bot.on('message', (message) => {
     break;
   case 'online':
     axios.get(`http://${lastInstanceIpAddress}:${lifecyclePort}/online`)
-      .then(players => {
+      .then(onlineResponse => {
+        console.log('onlineResponse:', onlineResponse);
+        const players = onlineResponse.data;
         console.log('players:', players);
         message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
       })
