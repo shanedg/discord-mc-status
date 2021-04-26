@@ -216,6 +216,10 @@ app.post('/backup', (req, res) => {
     'say Create backup',
     'save-all',
   ])
+    .catch(rconError => {
+      console.log('Problem communicating with the Minecraft server:', rconError);
+      console.log('Creating backup anyway.');
+    })
     .then(() => {
       const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
       const backupProcess = spawn(backupScript, [], {
@@ -226,8 +230,8 @@ app.post('/backup', (req, res) => {
       backupProcess.unref();
       res.sendStatus(200);
     })
-    .catch(saveFailure => {
-      res.status(500).send(saveFailure);
+    .catch(backupFailure => {
+      res.status(500).send(backupFailure);
     });
 });
 
