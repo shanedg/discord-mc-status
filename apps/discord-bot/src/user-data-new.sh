@@ -49,12 +49,28 @@ echo "eula=true
 " > "$mc_directory/eula.txt"
 
 # TODO: how to customize more properties via bot?
+# difficulty=peaceful|easy|normal|hard
+# gamemode=survival|creative|adventure|spectator
+
+level_type=default
+# https://stackoverflow.com/a/17421041
+if [[ $mc_world_name =~ -amp$ ]]
+then
+  level_type=amplified
+elif [[ $mc_world_name =~ -flat$ ]]
+then
+  level_type=flat
+elif [[ $mc_world_name =~ -large$ ]]
+then
+  level_type=largeBiomes
+fi
 
 # Rcon is off by default.
 # Turn it on but add a password.
 echo "
 enable-rcon=true
 rcon.password=$mc_rcon_secret
+level-type=$level_type
 " > "$mc_directory/server.properties"
 
 echo '
