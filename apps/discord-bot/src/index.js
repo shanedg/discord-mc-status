@@ -222,22 +222,26 @@ bot.on('message', (message) => {
     }
     break;
   case 'online':
-    axios.get(`http://${lastInstanceIpAddress}:${lifecyclePort}/online`)
-      .then(onlineResponse => {
-        console.log('onlineResponse:', onlineResponse);
-        const players = onlineResponse.data;
-        console.log('players:', players);
-        message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
-      })
-      .catch(onlineError => {
-        const { response } = onlineError;
-        if (response?.status === 400) {
-          message.channel.send('No server running.');
-        } else {
-          console.log('Problem checking who\'s online:', onlineError);
-          message.channel.send('There was an unexpected problem checking who\'s online :(');
-        }
-      });
+    if (lastInstanceId) {
+      axios.get(`http://${lastInstanceIpAddress}:${lifecyclePort}/online`)
+        .then(onlineResponse => {
+          console.log('onlineResponse:', onlineResponse);
+          const players = onlineResponse.data;
+          console.log('players:', players);
+          message.channel.send(`Online: ${players.length}/20\n${players.join(',')}`);
+        })
+        .catch(onlineError => {
+          const { response } = onlineError;
+          if (response?.status === 400) {
+            message.channel.send('Server stopped.');
+          } else {
+            console.log('Problem checking who\'s online:', onlineError);
+            message.channel.send('There was an unexpected problem checking who\'s online :(');
+          }
+        });
+    } else {
+      message.channel.send('No server running.');
+    }
     break;
   case 'backup':
     // TODO: broadcast 30 second warning
