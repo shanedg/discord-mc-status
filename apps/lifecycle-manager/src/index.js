@@ -240,7 +240,7 @@ app.post('/backup', (req, res) => {
  */
 app.post('/backup-sync', (req, res) => {
   minecraft.runAll([
-    'say Create backup',
+    'say Creating backup...',
     'save-all',
   ])
     .catch(rconError => {
@@ -255,6 +255,9 @@ app.post('/backup-sync', (req, res) => {
         stdio: 'inherit',
       });
       res.sendStatus(200);
+    })
+    .then(() => {
+      return minecraft.run('say Backup complete.');
     })
     .catch(backupFailure => {
       res.status(500).send(backupFailure);
