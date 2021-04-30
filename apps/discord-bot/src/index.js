@@ -189,7 +189,9 @@ bot.on('message', (message) => {
       message.channel.send('Creating a backup...');
       axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup-sync`)
         .then(() => {
-          message.channel.send('Stopping the server...');
+          message.channel.send('Backup complete. Stopping the server...');
+        })
+        .then(() => {
           return axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/stop`);
         })
         .catch(lifecycleError => {
