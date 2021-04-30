@@ -246,14 +246,19 @@ bot.on('message', (message) => {
   case 'backup':
     // TODO: broadcast 30 second warning
     // TODO: broadcast backup complete
-    axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup`)
-      .then(() => {
-        message.channel.send('Backup started...');
-      })
-      .catch(backupError => {
-        console.log('Backup error:', backupError);
-        message.channel.send('There was a problem starting a backup!');
-      });
+    if (lastInstanceId) {
+      message.channel.send('Creating a backup...');
+      axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup-sync`)
+        .then(() => {
+          message.channel.send('Backup complete.');
+        })
+        .catch(backupError => {
+          console.log('Backup error:', backupError);
+          message.channel.send('There was a problem creating a backup!');
+        });
+    } else {
+      message.channel.send('No server running.');
+    }
     break;
   case 'help':
   default:
