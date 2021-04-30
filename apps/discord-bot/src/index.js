@@ -179,13 +179,8 @@ bot.on('message', (message) => {
           };
         })
         .catch(error => {
-          // Expected error if trying to start server before last one is finished terminating.
-          if (error.toString().indexOf('InvalidNetworkInterface.InUse') > -1) {
-            message.channel.send('A previous version of the server is still running, please try again in a few minutes.');
-          } else {
-            console.log('There was a problem launching a new EC2 instance:', error);
-            message.channel.send('There was a problem starting the server!');
-          }
+          console.log('There was a problem launching a new EC2 instance:', error);
+          message.channel.send('There was a problem starting the server!');
         });
     }
     break;
