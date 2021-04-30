@@ -48,6 +48,10 @@ aws s3 cp "$setup_folder/server_$mc_version.jar" "$local_jar"
 echo "eula=true
 " > "$mc_directory/eula.txt"
 
+# TODO: Set up remote monitoring:
+# https://docs.oracle.com/javase/8/docs/technotes/guides/management/jconsole.html
+# enable-jmx-monitoring=true
+
 # TODO: how to customize more properties via bot?
 # difficulty=peaceful|easy|normal|hard
 # gamemode=survival|creative|adventure|spectator
@@ -67,10 +71,16 @@ fi
 
 # Rcon is off by default.
 # Turn it on but add a password.
+# See more at https://minecraft.fandom.com/wiki/Server.properties
 echo "
+allow-flight=true
 enable-rcon=true
 rcon.password=$mc_rcon_secret
+enable-command-block=true
 level-type=$level_type
+motd=welcome to $mc_world_name!
+op-permission-level=3
+view-distance=12
 " > "$mc_directory/server.properties"
 
 echo '
