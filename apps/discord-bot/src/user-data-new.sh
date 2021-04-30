@@ -89,13 +89,13 @@ echo '
         "uuid": "9a00987d-d245-4f4e-a7fb-402534fa28a8",
         "name": "crossfiresdg",
         "level": 4,
-        "bypassesPlayerLimit": false
+        "bypassesPlayerLimit": true
     },
     {
         "uuid": "70d5c7d4-fbaa-467a-a1bf-42262a100e96",
         "name": "AcidJesus",
         "level": 3,
-        "bypassesPlayerLimit": false
+        "bypassesPlayerLimit": true
     }
 ]
 ' > "$mc_directory/ops.json"
