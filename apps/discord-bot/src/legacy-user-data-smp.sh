@@ -63,7 +63,7 @@ echo "[restore]" "backups available:"
 echo "\`\`\`"
 echo "$backups_available"
 echo "\`\`\`"
-backup_name=$(echo "$backups_available" | awk 'END{ print $4 }')
+backup_name=$(echo "$backups_available" | sort | awk 'END{ print $4 }')
 
 echo "[restore]" "found latest $backup_name"
 echo "[restore]" "starting restore of $backup_name"

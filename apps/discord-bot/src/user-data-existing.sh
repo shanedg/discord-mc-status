@@ -51,7 +51,15 @@ echo "[restore]" "backups available:"
 echo "\`\`\`"
 echo "$backups_available"
 echo "\`\`\`"
-backup_name=$(echo "$backups_available" | awk 'END{ print $4 }')
+# By default, s3-ls sorts based on the file name strings.
+# This puts double-digit numbers out of order.
+# e.g.
+# asdf-1
+# asdf-10
+# ...
+# asdf-9
+# Use sort utility to reorder the list based on the printed timestamp.
+backup_name=$(echo "$backups_available" | sort | awk 'END{ print $4 }')
 
 echo "[restore]" "found latest $backup_name"
 echo "[restore]" "starting restore of $backup_name"
