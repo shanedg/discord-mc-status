@@ -7,8 +7,7 @@ const minecraftServerSecurityGroupIds = [
   'sg-07c460c5f0d488981'
 ];
 
-// TODO: replace 'map' subdomain with 'craft'
-const legacySMPNetworkInterfaceId = 'eni-01eb358d0340eee1e';
+const legacySMPNetworkInterfaceId = 'eni-0461aac39d41eaffe';
 
 /**
  * Attach an Elastic IP address to a running instance.
