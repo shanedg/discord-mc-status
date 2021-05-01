@@ -123,6 +123,7 @@ bot.on('message', (message) => {
           const instanceId = launchResult.Instances[0].InstanceId;
           console.log('Created instance with Id:', instanceId);
           lastInstanceId = instanceId;
+          lastInstanceIpAddress = 'craft.trshcmpctr.com';
           message.channel.send('The server is starting up at craft.trshcmpctr.com');
           return instanceId;
         })
