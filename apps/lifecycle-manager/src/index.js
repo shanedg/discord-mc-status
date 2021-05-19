@@ -256,6 +256,10 @@ app.post('/backup-sync', (req, res) => {
       });
       res.sendStatus(200);
     })
+    .catch(scriptFailure => {
+      minecraft.run('say Backup failed!');
+      throw scriptFailure;
+    })
     .then(() => {
       return minecraft.run('say Backup complete.');
     })

@@ -70,7 +70,13 @@ then
   fi
   set -e
 else
-  time zip -r "$cached_backup" ./*
+  set +e
+  if ! time zip -r "$cached_backup" ./*
+  then
+    echo "[backup]" "Failed to zip"
+    exit 1
+  fi
+  set -e
 fi
 
 echo "[backup]" "Uploading backup"
