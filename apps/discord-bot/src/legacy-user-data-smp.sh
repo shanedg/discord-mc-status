@@ -72,6 +72,7 @@ time aws s3 cp "$bucket_folder$backup_name" /home/ec2-user/latest-backup.zip
 time sudo rm -rf /minecraft/*
 time unzip -o /home/ec2-user/latest-backup.zip -d /minecraft/
 
+sudo chown -R ec2-user:ec2-user /home/ec2-user
 sudo chown -R ec2-user:ec2-user /minecraft
 
 echo "[restore]" "successfully restored $backup_name"
