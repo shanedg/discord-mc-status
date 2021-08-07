@@ -220,7 +220,10 @@ app.post('/backup', (req, res) => {
       console.log('Problem communicating with the Minecraft server:', rconError);
       console.log('Creating backup anyway.');
     })
-    .then(() => {
+    .then(async () => {
+      await new Promise(resolve => {
+        setTimeout(resolve, 30000);
+      });
       const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
       const backupProcess = spawn(backupScript, [], {
         stdio: 'inherit',
@@ -247,7 +250,10 @@ app.post('/backup-sync', (req, res) => {
       console.log('Problem communicating with the Minecraft server:', rconError);
       console.log('Creating backup anyway.');
     })
-    .then(() => {
+    .then(async () => {
+      await new Promise(resolve => {
+        setTimeout(resolve, 30000);
+      });
       const backupScript = path.resolve(dirname(process.argv[1]), 'backup.sh');
       execSync(backupScript, {
         cwd: minecraftWorkingDirectory,
