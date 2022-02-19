@@ -5,7 +5,6 @@
   "main": "src/index.js",
   "scripts": {
     "build": "exit 0",
-    "clean": "rm -rf .rush",
     "dev": "nodemon --signal SIGTERM src/index.js",
     "lint": "eslint src",
     "start": "node src/index.js",

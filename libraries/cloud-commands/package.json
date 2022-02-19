@@ -5,7 +5,6 @@
   "main": "src/index.js",
   "scripts": {
     "build": "exit 0",
-    "clean": "rm -rf .rush",
     "lint": "eslint src",
     "test": "node src/launchInstance.integration.test.js"
   },

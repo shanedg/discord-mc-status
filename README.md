@@ -64,23 +64,3 @@ Related issues:
 [rush] "rush update" fails if npm-shrinkwrap.json is present (sometimes)
 * [microsoft/rushstack#2542](https://github.com/microsoft/rushstack/issues/2542),
 [rush] Cannot find installed dependency on rush update
-
-Resolution 1:
-
-> This has been my go-to for a while,
-but I suspect much of it is unnecessary or harmful.
-
-```sh
-rush clean
-rush purge
-# This one hurts but is necessary when a stale .tar.gz archive of a local project won't update:
-rm common/config/rush/npm-shrinkwrap.json
-npm cache clear -f
-rush update
-```
-
-Resolution 2:
-
-```sh
-rush update --full
-```
