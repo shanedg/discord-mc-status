@@ -29,7 +29,7 @@ mc_directory="/minecraft"
 s3_bucket="s3://minecraft.trshcmpctr.com"
 setup_folder="$s3_bucket/setup"
 local_jar="${mc_directory}/server.jar"
-mc_version="1.16.5"
+mc_version="1.18.1"
 mc_rcon_secret="<REPLACE_ME_RCON_SECRET>"
 mc_world_name="<REPLACE_ME_WORLD_NAME>"
 
@@ -42,7 +42,7 @@ max_gc_pause="50"
 # Allow the first run to populate all default values for server.properties
 # except for Rcon settings.
 sudo mkdir "$mc_directory"
-aws s3 cp "$setup_folder/server_$mc_version.jar" "$local_jar"
+aws s3 cp "$setup_folder/server.$mc_version.jar" "$local_jar"
 
 # Agree to the EULA or the server won't start!
 echo "eula=true
