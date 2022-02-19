@@ -16,7 +16,7 @@
    * path segment in the "$schema" field for all your Rush config files.  This will ensure
    * correct error-underlining and tab-completion for editors such as VS Code.
    */
-  "rushVersion": "5.42.3",
+  "rushVersion": "5.62.4",
 
   /**
    * The next field selects which package manager should be installed and determines its version.
@@ -26,10 +26,7 @@
    * Specify one of: "pnpmVersion", "npmVersion", or "yarnVersion".  See the Rush documentation
    * for details about these alternatives.
    */
-  "npmVersion": "6.14.11",
-
-  // "pnpmVersion": "5.15.2",
-  // "yarnVersion": "1.9.4",
+  "pnpmVersion": "6.31.0",
 
   /**
    * Options that are only used when the PNPM package manager is selected
@@ -94,7 +91,7 @@
      *
      * The default value is false.
      */
-    // "preventManualShrinkwrapChanges": true,
+    "preventManualShrinkwrapChanges": true,
 
     /**
      * If true, then `rush install` will use the PNPM workspaces feature to perform the
@@ -124,7 +121,7 @@
    * LTS schedule: https://nodejs.org/en/about/releases/
    * LTS versions: https://nodejs.org/en/download/releases/
    */
-  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0",
+  "nodeSupportedVersionRange": ">=14.15.0 <15.0.0 || >=16 <17.0.0",
 
   /**
    * Odd-numbered major versions of Node.js are experimental.  Even-numbered releases
