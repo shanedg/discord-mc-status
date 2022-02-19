@@ -16,7 +16,7 @@ import path, { dirname } from 'path';
 
 // Third-party
 import axios from 'axios';
-import discord from 'discord.js';
+import { Client, Intents } from 'discord.js';
 import dotenv from 'dotenv';
 
 // Ours
@@ -93,7 +93,13 @@ const {
   LIFECYCLE_PORT: lifecyclePort,
 } = process.env;
 
-const bot = new discord.Client();
+let bot;
+try {
+  bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
+} catch(e) {
+  console.log(e);
+  process.exit(1);
+}
 
 bot.once('ready', () => {
   console.log('discord-bot ready!');

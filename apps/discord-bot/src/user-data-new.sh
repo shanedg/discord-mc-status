@@ -129,16 +129,19 @@ sudo service minecraft start
 # END MINECRAFT SERVER
 
 # BEGIN NODE AND RUSH
-curl https://nodejs.org/dist/v14.16.1/node-v14.16.1-linux-x64.tar.xz --output $mc_user_home/node-v14.16.1-linux-x64.tar.xz
+curl https://nodejs.org/dist/v16.14.0/node-v16.14.0-linux-x64.tar.xz --output $mc_user_home/node-v16.14.0-linux-x64.tar.xz
 
 # tar wants to be in the same directory as the archive.
-(cd $mc_user_home && tar -xf node-v14.16.1-linux-x64.tar.xz)
+(cd $mc_user_home && tar -xf node-v16.14.0-linux-x64.tar.xz)
 
-sudo chown -R $mc_user:$mc_user $mc_user_home/node-v14.16.1-linux-x64
-node_binary_location="$mc_user_home/node-v14.16.1-linux-x64/bin"
+sudo chown -R $mc_user:$mc_user $mc_user_home/node-v16.14.0-linux-x64
+node_binary_location="$mc_user_home/node-v16.14.0-linux-x64/bin"
 
-export PATH=$node_binary_location:$PATH
-echo PATH="$node_binary_location:$PATH" >> $mc_user_home/.bashrc
+# We want this to output $PATH without expansion
+# shellcheck disable=SC2016
+echo PATH="$node_binary_location":'$PATH' >> $mc_user_home/.bashrc
+# shellcheck source=/dev/null
+. $mc_user_home/.bashrc
 
 npm install --global @microsoft/rush
 # END NODE AND RUSH

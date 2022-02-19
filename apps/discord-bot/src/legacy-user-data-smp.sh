@@ -90,13 +90,13 @@ sudo service minecraft start
 # BEGIN NODE AND RUSH
 ec2_user_home="/home/ec2-user"
 
-curl https://nodejs.org/dist/v14.16.1/node-v14.16.1-linux-x64.tar.xz --output $ec2_user_home/node-v14.16.1-linux-x64.tar.xz
+curl https://nodejs.org/dist/v16.14.0/node-v16.14.0-linux-x64.tar.xz --output $ec2_user_home/node-v16.14.0-linux-x64.tar.xz
 
 # tar wants to be in the same directory as the archive.
-(cd $ec2_user_home && tar -xf node-v14.16.1-linux-x64.tar.xz)
+(cd $ec2_user_home && tar -xf node-v16.14.0-linux-x64.tar.xz)
 
-sudo chown -R ec2-user:ec2-user $ec2_user_home/node-v14.16.1-linux-x64
-node_binary_location="$ec2_user_home/node-v14.16.1-linux-x64/bin"
+sudo chown -R ec2-user:ec2-user $ec2_user_home/node-v16.14.0-linux-x64
+node_binary_location="$ec2_user_home/node-v16.14.0-linux-x64/bin"
 
 export PATH=$node_binary_location:$PATH
 echo PATH="$node_binary_location:$PATH" >> $ec2_user_home/.bashrc
