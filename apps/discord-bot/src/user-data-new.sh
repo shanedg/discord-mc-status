@@ -17,8 +17,8 @@
 set -euo pipefail
 
 sudo yum update -y
-sudo amazon-linux-extras install java-openjdk11
-sudo yum install git htop -y
+# sudo amazon-linux-extras install java-openjdk11
+sudo yum install git htop java-17 -y
 
 echo "starting new server setup"
 
