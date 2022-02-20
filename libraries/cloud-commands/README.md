@@ -15,15 +15,6 @@ and customize user data.
 
 ## Commands
 
-### build
-
-No compilation step for this project.
-This is a no-op, always exits with 0 for Rush.
-
-### lint
-
-Lint JavaScript source files for problems.
-
 ### test
 
 > WARNING: Creates resources in the real, billable AWS environment!

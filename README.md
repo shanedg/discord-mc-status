@@ -46,8 +46,8 @@ Custom commands:
 See ["Custom commands"](https://rushjs.io/pages/maintainer/custom_commands/)
 for more information.
 
-* `rush clean`
-* `rush lint`
+* `rush lint` - lint JavaScript
+* `rush lint:md` - lint Markdown
 
 ## Troubleshooting
 

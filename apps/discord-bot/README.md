@@ -7,18 +7,9 @@ that adds a horrible little bot.
 
 ## Commands
 
-### build
-
-No compilation step for this project.
-This is a no-op, always exits with 0 for Rush.
-
 ### dev
 
 Start the Minecraft manager server and restart when files change.
-
-### lint
-
-Lint JavaScript source files for problems.
 
 ### start
 
