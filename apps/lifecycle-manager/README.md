@@ -7,8 +7,8 @@ A Node server for managing the lifecycle of a vanilla Minecraft multiplayer serv
 Important configuration values are set in a `.env` file in the project root.
 
 Start by copying [.env.sample](./.env.sample) to `.env`.
-At a minimum, you will need to set `MC_WORKING_DIRECTORY` to the location of the Minecraft server files
-and `RCON_SECRET` to the Minecraft server's Rcon password.
+At a minimum, you will need to set `MC_WORKING_DIRECTORY` to the location of the
+Minecraft server files and `RCON_SECRET` to the Minecraft server's Rcon password.
 
 Minecraft server arguments:
 
@@ -16,9 +16,9 @@ Minecraft server arguments:
 * `MC_MAX_GC_PAUSE` - target for maximum Java garbage collection pause time in milliseconds
 * `MC_MAXIMUM_MEMORY` - maximum memory for Java
 * `MC_MINIMUM_MEMORY` - minimum memory for Java
-* `MC_USE_SYSTEMD` - control whether the Minecraft server will run directly as a Java process
-or as a systemd service unit;
-if `true`, Java server arguments are ignored in favor of the `minecraft.service` definition
+* `MC_USE_SYSTEMD` - control whether the Minecraft server will run directly
+as a Java process or as a systemd service unit; if `true`,
+Java server arguments are ignored in favor of the `minecraft.service` definition
 * `MC_WORKING_DIRECTORY` - location of the Minecraft server files
 * `MC_WORLD_NAME` - unique identifier for Minecraft server backups
 

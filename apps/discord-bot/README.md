@@ -1,6 +1,7 @@
 # discord-bot
 
-A Node server that powers a [Discord app](https://discord.com/developers/applications/818225796924702740/bot) with a Bot user.
+A [Discord app](https://discord.com/developers/applications/818225796924702740/bot)
+that adds a horrible little bot.
 
 > Created largely by following the [Discord.js guide](https://discordjs.guide/).
 
