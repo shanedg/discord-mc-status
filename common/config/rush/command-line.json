@@ -171,7 +171,8 @@
       "name": "lint",
       "summary": "Lint JavaScript.",
       "description": "Lints JavaScript files in projects.",
-      "enableParallelism": true
+      "enableParallelism": true,
+      "ignoreMissingScript": true
     }
   ],
 

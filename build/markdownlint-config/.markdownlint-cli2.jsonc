@@ -1,0 +1,7 @@
+// Shareable config for markdownlint-cli2.
+{
+  "config": {
+    // Make rule consistent with defaults for the VSCode Extension.
+    "line-length": false
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@mc-discord-bot/markdownlint-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".markdownlint-cli2.jsonc",
+  "scripts": {
+    "build": "exit 0",
+    "lint:md": "markdownlint-cli2-config '.markdownlint-cli2.jsonc' '**/*.md' '#node_modules'"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "~0.4.0"
+  },
+  "peerDependencies": {
+    "markdownlint-cli2": "^0.4.0"
+  }
+}

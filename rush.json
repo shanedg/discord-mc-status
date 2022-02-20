@@ -469,6 +469,10 @@
     {
       "packageName": "cloud-commands",
       "projectFolder": "libraries/cloud-commands"
+    },
+    {
+      "packageName": "@mc-discord-bot/markdownlint-config",
+      "projectFolder": "build/markdownlint-config"
     }
   ]
 }
