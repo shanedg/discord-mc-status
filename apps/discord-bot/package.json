@@ -7,6 +7,7 @@
     "build": "exit 0",
     "dev": "nodemon src/index.js",
     "lint": "eslint src",
+    "lint:md": "markdownlint-cli2-config 'node_modules/@mc-discord-bot/markdownlint-config/.markdownlint-cli2.jsonc' '**/*.md' '#node_modules'",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,13 +16,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "~13.6.0",
-    "dotenv": "^8.2.0",
     "axios": "~0.21.1",
-    "cloud-commands": "~1.0.0"
+    "cloud-commands": "~1.0.0",
+    "discord.js": "~13.6.0",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
+    "@mc-discord-bot/markdownlint-config": "~1.0.0",
     "eslint": "~7.23.0",
-    "nodemon": "~2.0.7"
+    "nodemon": "~2.0.7",
+    "markdownlint-cli2": "~0.4.0"
   }
 }

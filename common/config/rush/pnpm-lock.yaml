@@ -2015,19 +2015,20 @@ packages:
     dev: false
 
   file:projects/cloud-commands.tgz:
-    resolution: {integrity: sha512-8oklbUvQCdIFDbxe3raeGO7+uAfi2aSzReXUyi6tMevQsi0wM2qhYm0T2p+MXJhP9oiCmX7X9BEgWfiBs3toSA==, tarball: file:projects/cloud-commands.tgz}
+    resolution: {integrity: sha512-zC2IeO5RiGOylvP1ecauYnUQdH9904x6YSUjEmpOj9biFikoajvUDAZvQeSXHzVY4jr9WzT17/9UwEQDKO2Snw==, tarball: file:projects/cloud-commands.tgz}
     name: '@rush-temp/cloud-commands'
     version: 0.0.0
     dependencies:
       dotenv: 8.6.0
       eslint: 7.23.0
+      markdownlint-cli2: 0.4.0
       rcon-client: 4.2.3
     transitivePeerDependencies:
       - supports-color
     dev: false
 
   file:projects/discord-bot.tgz:
-    resolution: {integrity: sha512-siVsCd5J7t5bQCypdKW9HPBRiMPJyU/inbbbgIEeIHSYDKkzBvOYGmQv4ialawZtv0D1hgd+fZNaKdwY0oXoEg==, tarball: file:projects/discord-bot.tgz}
+    resolution: {integrity: sha512-7jnEEj/n/zabCjuEpfv2Ien+JtvSOiA2G3yStVTW/03dqZTvY5sz2TQFuBYm5npxQdca5LWRHlC+hwP6P9lPSw==, tarball: file:projects/discord-bot.tgz}
     name: '@rush-temp/discord-bot'
     version: 0.0.0
     dependencies:
@@ -2035,6 +2036,7 @@ packages:
       discord.js: 13.6.0
       dotenv: 8.6.0
       eslint: 7.23.0
+      markdownlint-cli2: 0.4.0
       nodemon: 2.0.15
     transitivePeerDependencies:
       - bufferutil
@@ -2045,13 +2047,14 @@ packages:
     dev: false
 
   file:projects/lifecycle-manager.tgz:
-    resolution: {integrity: sha512-2cx6HTbW0MBkNP6ZGle0oz3GeGC4eVXZpj/3GFdop/Bo22TgNXzrGyMc3Qqg82pD6qzlnozWKOFvw7uTFF0yMQ==, tarball: file:projects/lifecycle-manager.tgz}
+    resolution: {integrity: sha512-R0veVJWjSv8N4lhbTBeBLcDh43kKSdlOlhdRG/us+yyImmEYHlEOolR9Cmm5KXRWa6Vt7vxABVFE76LNxTXQUQ==, tarball: file:projects/lifecycle-manager.tgz}
     name: '@rush-temp/lifecycle-manager'
     version: 0.0.0
     dependencies:
       dotenv: 8.6.0
       eslint: 7.23.0
       express: 4.17.3
+      markdownlint-cli2: 0.4.0
       nodemon: 2.0.15
     transitivePeerDependencies:
       - supports-color
@@ -2066,12 +2069,13 @@ packages:
     dev: false
 
   file:projects/minecraft-rcon.tgz:
-    resolution: {integrity: sha512-9M3HsnrkfrMkFUx6nQV1VRyTk8pYqGWYDoLczWa9NKuc5fzqcCwcndsPGd/Nc2jepQp7XmbaaNojVoFWk0tn7Q==, tarball: file:projects/minecraft-rcon.tgz}
+    resolution: {integrity: sha512-TFC30H16BETAZgiwZm8lTD3ktyF+IQg6wOBtUE5HTW/DWGgxY7S10bWujXp1Y9rlKhErY/+1LI3V9NMq2zt3pQ==, tarball: file:projects/minecraft-rcon.tgz}
     name: '@rush-temp/minecraft-rcon'
     version: 0.0.0
     dependencies:
       dotenv: 8.6.0
       eslint: 7.23.0
+      markdownlint-cli2: 0.4.0
       rcon-client: 4.2.3
     transitivePeerDependencies:
       - supports-color

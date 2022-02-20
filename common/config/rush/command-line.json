@@ -173,6 +173,13 @@
       "description": "Lints JavaScript files in projects.",
       "enableParallelism": true,
       "ignoreMissingScript": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "lint:md",
+      "summary": "Lint Markdown.",
+      "description": "Lints Markdown files in projects.",
+      "enableParallelism": true
     }
   ],
 
