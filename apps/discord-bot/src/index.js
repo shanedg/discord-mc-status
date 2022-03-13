@@ -192,11 +192,7 @@ bot.on('message', (message) => {
     break;
   case 'stop':
     if (lastInstanceId) {
-      message.channel.send('Creating a backup...');
       axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/backup-sync`)
-        .then(() => {
-          message.channel.send('Backup complete. Stopping the server...');
-        })
         .then(() => {
           return axios.post(`http://${lastInstanceIpAddress}:${lifecyclePort}/stop`);
         })
@@ -217,7 +213,7 @@ bot.on('message', (message) => {
           console.log('Terminated instance with Id:', lastInstanceId);
           lastInstanceId = null;
           lastInstanceIpAddress = null;
-          message.channel.send('Server stopped.');
+          message.channel.send('Server backed up and stopped.');
         })
         .catch(error => {
           console.log('Problem stopping the server:', error);
